@@ -9,8 +9,6 @@ http://www.springframework.org/schema/data/mongo
 http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
- 
-    <context:property-placeholder location="classpath:spring/data-access.properties"/>
 	
 	<mongo:mongo host="${mongodb.host}" port="${mongodb.port}" />
 	<mongo:db-factory dbname="${mongodb.database}" username="${mongodb.username}" password="${mongodb.password}" mongo-ref="mongo" />
@@ -18,4 +16,5 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
 	</bean>
 	
+	<mongo:repositories base-package="mk.finki.unip.ranggo.repository" />
 </beans>
