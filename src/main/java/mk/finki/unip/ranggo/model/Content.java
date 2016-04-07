@@ -1,6 +1,5 @@
 package mk.finki.unip.ranggo.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "contents")
 public class Content {
 	
@@ -29,7 +31,13 @@ public class Content {
 	private String body;
 	
 	@NotNull
-	private List<Rating> ratings;
+	private List<PersonEntity> personEntities;
+	
+	private List<Concept> concepts;
+	
+	private List<Keyword> keywords;
+	
+	private List<Taxonomy> taxonomies;
 	
 	@NotNull
 	private String timestamp;
@@ -74,12 +82,36 @@ public class Content {
 		this.body = body;
 	}
 	
-	public List<Rating> getRatings(){
-		return ratings;
+	public List<PersonEntity> getPersonEntities(){
+		return personEntities;
 	}
 	
-	public void setRatings(List<Rating> ratings){
-		this.ratings = ratings;
+	public void setPersonEntities(List<PersonEntity> personEntities){
+		this.personEntities = personEntities;
+	}
+	
+	public List<Concept> getConcepts(){
+		return concepts;
+	}
+	
+	public void setConcepts(List<Concept> concepts){
+		this.concepts = concepts;
+	}
+	
+	public List<Keyword> getKeywords(){
+		return keywords;
+	}
+	
+	public void setKeywords(List<Keyword> keywords){
+		this.keywords = keywords;
+	}
+	
+	public List<Taxonomy> getTaxonomies(){
+		return taxonomies;
+	}
+	
+	public void setTaxonomies(List<Taxonomy> taxonomies){
+		this.taxonomies = taxonomies;
 	}
 	
 	public String getTimestamp(){
@@ -95,7 +127,10 @@ public class Content {
 		this.type = null;
 		this.title = null;
 		this.body = null;
-		this.ratings = new ArrayList<Rating>();
+		this.personEntities = null;
+		this.concepts = null;
+		this.keywords = null;
+		this.taxonomies = null;
 		this.timestamp = null;
 	}
 }

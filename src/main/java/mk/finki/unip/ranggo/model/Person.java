@@ -1,6 +1,5 @@
 package mk.finki.unip.ranggo.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +8,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @Document(collection = "persons")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
 	@Id
 	@NotNull
@@ -79,7 +81,7 @@ public class Person {
 		this.dbpediaUrl = null;
 		this.name = null;
 		this.shortBio = null;
-		this.categories = new ArrayList<String>();
+		this.categories = null;
 		this.pictureUrl = null;
 	}
 }
