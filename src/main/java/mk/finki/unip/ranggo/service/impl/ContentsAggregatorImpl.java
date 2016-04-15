@@ -140,7 +140,46 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateOther(Date date) throws ContentsAggregatorException {
-		//TODO
+		//huffington post
+		
+		//disregards date - fetches current index contents
+		final String url = "http://www.huffingtonpost.com/feeds/index.xml";
+
+		//parse the rss
+		try{
+			DocumentBuilderFactory documenetBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder documentBuilder = documenetBuilderFactory.newDocumentBuilder();
+			Document document = documentBuilder.parse(url);
+					
+			document.getDocumentElement().normalize();
+			
+			NodeList items = document.getElementsByTagName("item");
+			
+			//extract data for each article
+			for(int i = 0; i < items.getLength(); i++){
+				Element itemElement = (Element)items.item(i);
+				
+				String itemTitle = itemElement.getElementsByTagName("title").item(0).getTextContent().replace("<![CDATA[", "").replace("]]>", "").replaceAll("&apos;", "'").replaceAll("&quot;", "'").replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&").trim();
+				String itemLink = itemElement.getElementsByTagName("link").item(0).getTextContent();
+				String itemPubDate = itemElement.getElementsByTagName("pubDate").item(0).getTextContent();
+				
+				itemLink = URLDecoder.decode(itemLink, "UTF-8");
+				
+				try{
+					this.processOther(itemLink, itemTitle, itemPubDate);
+				}
+				catch(ParserConfigurationException exception){} //these exceptions should be logged - only a single article fails  
+				catch(SAXException exception){}
+				catch(XPathExpressionException exception){}
+				catch(IOException exception){}
+			}
+		}catch(ParserConfigurationException exception){
+			throw new ContentsAggregatorException("parser configuration error", AggregatorMethod.GOOGLE_NEWS_RSS_FEED);
+		}catch(SAXException exception){
+			throw new ContentsAggregatorException("xml parse exception", AggregatorMethod.GOOGLE_NEWS_RSS_FEED);
+		}catch(IOException exception){
+			throw new ContentsAggregatorException("can not fetch resource", AggregatorMethod.GOOGLE_NEWS_RSS_FEED);
+		}
 	}
 	
 	private void processGoogleNewsArticle(String articleURL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
@@ -165,8 +204,18 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		//TODO
 	}
 	
-	private void processOther(String URL){
-		//TODO
+	private void processOther(String URL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
+		//do not analyze it if it exists in the data store (check by url)
+		if(contentRepository.findBySourceUrl(URL) == null){
+			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
+			
+			analysisResults.setType("OTHER");
+			analysisResults.setUrl(URL);
+			analysisResults.setTitle(title);
+			analysisResults.setTimestamp(timestamp);
+			
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
 	}
 	
 	private static AlchemyAPIAnalysisResult analyzeContent(AlchemyAPI alchemyapi, AlchemyAPI_CombinedParams alchemyapi_params, String contentURL) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {

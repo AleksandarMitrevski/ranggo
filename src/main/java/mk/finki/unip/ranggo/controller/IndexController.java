@@ -35,7 +35,7 @@ public class IndexController {
 		return new ModelAndView("index");
 	}
 	
-	//each invocation currently costs 60 AlchemyAPI transactions 
+	//each invocation currently costs 120 AlchemyAPI transactions 
 	@RequestMapping(value={"/update"}, method=RequestMethod.GET)
 	@ResponseBody
 	public String update(@RequestParam(required=false) String date){
