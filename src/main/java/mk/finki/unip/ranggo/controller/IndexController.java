@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -99,7 +100,19 @@ public class IndexController {
 	    }
 	}
 	
-	//currently used only for debug
+	@RequestMapping(value={"/ratings/{id}"}, method=RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<Content> getRatingsForPerson(@PathVariable("id") String id){
+		return selector.getRatingsForPerson(id);
+	}
+	
+	@RequestMapping(value={"/latest-news"}, method=RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<Content> getLatestNews(){
+		return selector.getLatestNews();
+	}
+	
+	//currently used for debug purposes
 	
 	@RequestMapping(value={"/persons"}, method=RequestMethod.GET, produces = "application/json")
 	@ResponseBody

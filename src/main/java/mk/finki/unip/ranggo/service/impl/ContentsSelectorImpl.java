@@ -42,4 +42,12 @@ public class ContentsSelectorImpl implements ContentsSelector {
 		
 		return contents;
 	}
+
+	public List<Content> getRatingsForPerson(String id) {
+		return contentRepository.getContentsForPerson(id);
+	}
+
+	public List<Content> getLatestNews() {
+		return contentRepository.getNewestContents();
+	}
 }

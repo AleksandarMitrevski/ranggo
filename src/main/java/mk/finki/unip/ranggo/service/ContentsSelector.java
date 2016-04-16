@@ -10,4 +10,8 @@ public interface ContentsSelector {
 	public List<Person> getAllPersons();
 	
 	public List<Content> getAllContents();
+	
+	public List<Content> getRatingsForPerson(String id);
+	
+	public List<Content> getLatestNews();
 }
