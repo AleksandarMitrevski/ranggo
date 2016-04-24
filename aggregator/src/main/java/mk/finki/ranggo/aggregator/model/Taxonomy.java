@@ -1,4 +1,4 @@
-package mk.finki.unip.ranggo.model;
+package mk.finki.ranggo.aggregator.model;
 
 import java.util.List;
 

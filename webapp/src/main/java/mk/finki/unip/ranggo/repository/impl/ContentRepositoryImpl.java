@@ -38,7 +38,7 @@ public class ContentRepositoryImpl implements ContentRepositoryAuxiliary {
 
 	public List<Content> getNewestContents() {
 		Query query = new Query();
-		query.with(new Sort(Sort.Direction.DESC, "_id"));
+		query.with(new Sort(Sort.Direction.DESC, "id"));
 		query.limit(10);
 		
 		return mongoTemplate.find(query, Content.class);
