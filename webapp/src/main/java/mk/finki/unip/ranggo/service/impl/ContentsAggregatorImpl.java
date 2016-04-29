@@ -182,6 +182,130 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		}
 	}
 	
+	public void aggregateTest() throws ContentsAggregatorException {
+		final int CONTENT_COUNT = 20;
+		
+		String[] articles = new String[CONTENT_COUNT];
+		String[] titles = new String[CONTENT_COUNT];
+		String[] timestamps = new String[CONTENT_COUNT];
+		
+		int counter = 0;
+		
+		//populating content information
+		
+		articles[counter] = "http://nymag.com/daily/intelligencer/2015/09/frank-rich-in-praise-of-donald-trump.html";
+		titles[counter] = "The Importance of Donald Trump";
+		timestamps[counter] = "Sun, 20 Sep 2015 21:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "https://www.washingtonpost.com/opinions/what-americans-think-should-be-done-on-illegal-immigration/2015/10/11/4f6f6df6-6ed7-11e5-9bfe-e59f5e244f92_story.html";
+		titles[counter] = "What Americans think should be done on illegal immigration";
+		timestamps[counter] = "Sun, 11 Oct 2015 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://thinkprogress.org/politics/2015/11/22/3724879/donald-trump-black-lives-matter-protester-beating/";
+		titles[counter] = "Donald Trump: My Fans Were Right To Beat Up Black Protester";
+		timestamps[counter] = "Sun, 22 Nov 2015 09:30:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://edition.cnn.com/2015/12/11/politics/donald-trump-ted-cruz-iowa-ethanol/";
+		titles[counter] = "Donald Trump launches first attacks against Ted Cruz";
+		timestamps[counter] = "Fri, 11 Dec 2015 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://edition.cnn.com/2015/12/18/politics/donald-trump-praises-defends-vladimir-putin/";
+		titles[counter] = "Donald Trump lavishes praise on 'leader' Putin";
+		timestamps[counter] = "Fri, 18 Dec 2015 15:19:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.cbsnews.com/news/donald-trump-compares-bill-clinton-to-bill-cosby/";
+		titles[counter] = "Donald Trump compares Bill Clinton to Bill Cosby";
+		timestamps[counter] = "Wed, 06 Jan 2016 08:56:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.sbnation.com/lookit/2016/1/28/10858584/australian-open-video-roger-federer-novak-djokovic-point";
+		titles[counter] = "Roger Federer wins mind-boggling point against Novak Djokovic in ridiculous rally";
+		timestamps[counter] = "Thu, 28 Jan 2016 09:47:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.theguardian.com/sport/2016/jan/31/novak-djokovic-andy-murray-australian-open-final";
+		titles[counter] = "Novak Djokovic beats Andy Murray to win the 2016 Australian Open final";
+		timestamps[counter] = "Sun, 31 Jan 2016 11:37:00 GMT";
+		counter++;
+
+		articles[counter] = "https://www.washingtonpost.com/politics/a-sigh-of-relief-in-swinging-northern-virginia-when-trump-fell-short-in-iowa/2016/02/02/1f48fb36-c9d3-11e5-a7b2-5a2f824b02c9_story.html";
+		titles[counter] = "A sigh of relief in Northern Virginia as Trump falls short in Iowa";
+		timestamps[counter] = "Tue, 2 Feb 2016 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.ibtimes.com/angelina-jolie-brad-pitt-divorce-angie-insanely-jealous-over-selena-gomez-cheating-2312126";
+		titles[counter] = "Angelina Jolie And Brad Pitt To Divorce? Angie Is 'Insanely Jealous' Over Selena Gomez Cheating Rumors: Report";
+		timestamps[counter] = "Wed, 17 Feb 2016 13:07:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.nytimes.com/2016/02/24/us/politics/nevada-caucus-gop.html";
+		titles[counter] = "Donald Trump Wins Nevada Caucuses, Collecting Third Straight Victory";
+		timestamps[counter] = "Tue, 23 Feb 2016 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.nytimes.com/politics/first-draft/2016/03/16/donald-trump-warns-of-riots-if-party-blocks-him-at-convention/";
+		titles[counter] = "Donald Trump Warns of 'Riots' if Party Blocks Him at Convention";
+		timestamps[counter] = "Wed, 16 Mar 2016 15:15:00 GMT";
+		counter++;
+		
+		articles[counter] = "https://www.washingtonpost.com/blogs/post-partisan/wp/2016/03/23/ted-cruzs-harebrained-harmful-policy-towards-american-muslims/";
+		titles[counter] = "Ted Cruz's harebrained, harmful policy toward American Muslims";
+		timestamps[counter] = "Wed, 23 Mar 2016 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://espn.go.com/tennis/story/_/id/15079824/miami-open-rafael-nadal-roger-federer-host-questions-answer";
+		titles[counter] = "Rafael Nadal, Roger Federer among top stars with questions to answer";
+		timestamps[counter] = "Mon, 28 Mar 2016 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.houstonchronicle.com/sports/article/Feliciano-Lopez-glad-he-plays-in-tennis-era-of-7235565.php";
+		titles[counter] = "Feliciano Lopez glad he plays in tennis era of Novak Djokovic & Co.";
+		timestamps[counter] = "Thu, 07 Apr 2016 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.vanityfair.com/hollywood/2016/04/brad-pitt-and-angelina-jolie-london-mansion";
+		titles[counter] = "Brad Pitt and Angelina Jolie's $21,000/Month London Mansion Is an Inspiration to All Business Travelers";
+		timestamps[counter] = "Fri, 22 Apr 2016 10:38:00 GMT";
+		counter++;
+		
+		articles[counter] = "https://www.washingtonpost.com/news/the-fix/wp/2016/04/26/how-donald-trump-is-dominating-the-i-95-primary/";
+		titles[counter] = "How Donald Trump dominated Tuesday's primaries";
+		timestamps[counter] = "Tue, 26 Apr 2016 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.inquisitr.com/3042986/johnny-depp-was-under-medical-care-after-filming/";
+		titles[counter] = "Johnny Depp Was Under Medical Care After Filming";
+		timestamps[counter] = "Thu, 28 Apr 2016 00:00:00 GMT";
+		counter++;
+		
+		articles[counter] = "https://www.washingtonpost.com/news/the-fix/wp/2016/04/29/the-gop-is-running-on-empty-so-why-are-people-debating-whether-to-stop-for-gas/";
+		titles[counter] = "Mitt Romney's chief strategist says Donald Trump is 'uniquely unqualified' to be president";
+		timestamps[counter] = "Fri, 29 Apr 2016 09:53:00 GMT";
+		counter++;
+		
+		articles[counter] = "http://www.mirror.co.uk/3am/celebrity-news/kirk-norcross-gets-arrested-dangerous-7864035";
+		titles[counter] = "Kirk Norcross 'gets ARRESTED for dangerous driving' hours after Snapchatting behind the wheel";
+		timestamps[counter] = "Fri, 29 Apr 2016 17:43:00 GMT";
+		counter++; //= CONTENT_COUNT
+		
+		//end populating content information
+		
+		for(int i = 0; i < CONTENT_COUNT; i++){
+			try{
+				this.processOther(articles[i], titles[i], timestamps[i]);
+			}
+			catch(ParserConfigurationException exception){} //these exceptions should be logged - only a single link fails  
+			catch(SAXException exception){}
+			catch(XPathExpressionException exception){}
+			catch(IOException exception){}
+		}
+	}
+	
 	private void processGoogleNewsArticle(String articleURL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
 		//do not analyze it if it exists in the data store (check by url)
 		if(contentRepository.findBySourceUrl(articleURL) == null){
@@ -281,7 +405,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 				person.setDbpediaUrl(dbpediaUrl);
 				person.setCategories(categories);
 				
-				//defer fetching from dbpedia until before adding to data store (a prior confirmation that the person does not exist in the data store reduces total traffic) 
+				//defer fetching from dbpedia until before adding to data store (a prior confirmation that the person isn't already stored reduces total traffic) 
 				person.setShortBio(null);
 				person.setPictureUrl(null);
 				

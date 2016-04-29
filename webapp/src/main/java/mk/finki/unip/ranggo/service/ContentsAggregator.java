@@ -11,4 +11,6 @@ public interface ContentsAggregator {
 	public void aggregateTwitter(Date date) throws ContentsAggregatorException;
 	
 	public void aggregateOther(Date date) throws ContentsAggregatorException;
+	
+	public void aggregateTest() throws ContentsAggregatorException;
 }

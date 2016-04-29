@@ -100,6 +100,18 @@ public class IndexController {
 	    }
 	}
 	
+	//20 static articles - 120 AlchemyAPI transactions 
+	@RequestMapping(value={"/test"}, method=RequestMethod.GET)
+	@ResponseBody
+	public String test(){				
+		try{
+			aggregator.aggregateTest();
+			return "ok";
+		}catch(ContentsAggregatorException exception){
+			return "failed/partial";
+		}
+	}
+	
 	@RequestMapping(value={"/ratings/{id}"}, method=RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<Content> getRatingsForPerson(@PathVariable("id") String id){
