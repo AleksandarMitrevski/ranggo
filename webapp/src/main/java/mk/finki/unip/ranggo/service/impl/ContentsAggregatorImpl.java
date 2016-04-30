@@ -47,7 +47,6 @@ import mk.finki.unip.ranggo.repository.PersonRepository;
 import mk.finki.unip.ranggo.service.ContentsAggregator;
 import mk.finki.unip.ranggo.service.ContentsAggregatorException;
 import mk.finki.unip.ranggo.service.ContentsAggregatorException.AggregatorMethod;
-//import mk.finki.unip.ranggo.utility.HttpHelper;
 
 @Service
 public class ContentsAggregatorImpl implements ContentsAggregator {
@@ -131,18 +130,8 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		}
 	}
 	
-	public void aggregateFacebook(Date date) throws ContentsAggregatorException {
-		//TODO
-	}
-	
-	public void aggregateTwitter(Date date) throws ContentsAggregatorException {
-		//TODO
-	}
-	
-	public void aggregateOther(Date date) throws ContentsAggregatorException {
-		//huffington post
-		
-		//disregards date - fetches current index contents
+	public void aggregateHuffingtonPost() throws ContentsAggregatorException {
+		//fetches current index contents
 		final String url = "http://www.huffingtonpost.com/feeds/index.xml";
 
 		//parse the rss
@@ -318,14 +307,6 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 			
 			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
 		}
-	}
-	
-	private void processFacebookPost(String postURL){
-		//TODO
-	}
-	
-	private void processTweet(String tweetURL){
-		//TODO
 	}
 	
 	private void processOther(String URL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {

@@ -61,7 +61,7 @@ public class IndexController {
 		}
 		
 	    if(dateObj != null){
-			boolean googlenews = true, facebook = true, twitter = true, other = true;
+			boolean googlenews = true, huffingtonpost = true;
 			
 			try{
 				aggregator.aggregateGoogleNewsRSSFeed(dateObj);
@@ -70,27 +70,15 @@ public class IndexController {
 			}
 			
 			try{
-				aggregator.aggregateFacebook(dateObj);
+				aggregator.aggregateHuffingtonPost();
 			}catch(ContentsAggregatorException exception){
-				facebook = false;
-			}
-			
-			try{
-				aggregator.aggregateTwitter(dateObj);
-			}catch(ContentsAggregatorException exception){
-				twitter = false;
-			}
-			
-			try{
-				aggregator.aggregateOther(dateObj);
-			}catch(ContentsAggregatorException exception){
-				other = false;
+				huffingtonpost = false;
 			}
 			
 			//return operation status
-			if(googlenews && facebook && twitter && other){
+			if(googlenews && huffingtonpost){
 				return "ok";
-			}else if(!googlenews && !facebook && !twitter && !other){
+			}else if(!googlenews && !huffingtonpost){
 				return "failed";
 			}else{
 				return "partial";
