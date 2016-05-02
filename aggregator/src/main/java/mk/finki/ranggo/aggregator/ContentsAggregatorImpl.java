@@ -144,7 +144,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 				itemLink = URLDecoder.decode(itemLink, "UTF-8");
 				
 				try{
-					this.processOther(itemLink, itemTitle, itemPubDate);
+					this.processHuffingtonPost(itemLink, itemTitle, itemPubDate);
 				}
 				catch(ParserConfigurationException exception){} //these exceptions should be logged - only a single article fails  
 				catch(SAXException exception){}
@@ -275,7 +275,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		
 		for(int i = 0; i < CONTENT_COUNT; i++){
 			try{
-				this.processOther(articles[i], titles[i], timestamps[i]);
+				this.processStatic(articles[i], titles[i], timestamps[i]);
 			}
 			catch(ParserConfigurationException exception){} //these exceptions should be logged - only a single link fails  
 			catch(SAXException exception){}
@@ -298,12 +298,26 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		}
 	}
 	
-	private void processOther(String URL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
+	private void processHuffingtonPost(String URL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
 		//do not analyze it if it exists in the data store (check by url)
 		if(contentRepository.findBySourceUrl(URL) == null){
 			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
 			
-			analysisResults.setType("OTHER");
+			analysisResults.setType("HUFFINGTON_POST");
+			analysisResults.setUrl(URL);
+			analysisResults.setTitle(title);
+			analysisResults.setTimestamp(timestamp);
+			
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	private void processStatic(String URL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
+		//do not analyze it if it exists in the data store (check by url)
+		if(contentRepository.findBySourceUrl(URL) == null){
+			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
+			
+			analysisResults.setType("STATIC");
 			analysisResults.setUrl(URL);
 			analysisResults.setTitle(title);
 			analysisResults.setTimestamp(timestamp);
