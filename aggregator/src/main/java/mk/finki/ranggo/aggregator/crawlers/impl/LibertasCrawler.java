@@ -1,8 +1,10 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.entities.AlchemyAPIObject;
+import mk.finki.ranggo.aggregator.helper.HelperClass;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -21,8 +23,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Simona on 4/3/2016.
@@ -31,27 +35,21 @@ public class LibertasCrawler implements Crawler {
 
     private String url = "http://www.libertas.mk/category/%D0%B0%D0%BA%D1%82%D1%83%D0%B5%D0%BB%D0%BD%D0%BE/";
 
-    public static void main(String[] args){
-        LibertasCrawler crawler = new LibertasCrawler();
-        crawler.crawl();
+    private List<AlchemyAPIAnalysisResult> results;
+
+    public LibertasCrawler(){
+    	results = new ArrayList<AlchemyAPIAnalysisResult>();
     }
-
-    public void crawl(){
-        OutputStreamWriter writer = null;
+    
+    public  List<AlchemyAPIAnalysisResult> crawl(){
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/libertas.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|text|shortText|author|source\n");
-
             int i = 1;
             while(true){
                 String tempURL = url;
                 if(i > 1){
                     tempURL = url + "/page/" + i + "/";
                 }
-                boolean flag = crawlPages(tempURL, writer);
+                boolean flag = crawlPages(tempURL);
                 System.out.println("Flag: " + flag);
                 if(!flag){
                     break;
@@ -61,18 +59,11 @@ public class LibertasCrawler implements Crawler {
 
         }catch(Exception ex){
 
-        } finally {
-            if(writer != null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        } 
+        return results;
     }
 
-    private boolean crawlPages(String url, OutputStreamWriter writer){
+    private boolean crawlPages(String url){
         boolean returnValue = true;
         try {
             URLConnection conn = new URL(url).openConnection();
@@ -104,7 +95,7 @@ public class LibertasCrawler implements Crawler {
                 String link = (String) xPath.evaluate("./div[contains(@class,'item-header')]//a/@href", tr, XPathConstants.STRING);
                 String title = (String) xPath.evaluate("./div[contains(@class,'item-content')]/h3/a/text()", tr, XPathConstants.STRING);
                 String shortText = (String) xPath.evaluate("./div[contains(@class,'item-content')]/p//text()", tr, XPathConstants.STRING);
-                boolean flag = secondLevel(link, image, title, shortText, writer);
+                boolean flag = secondLevel(link, image, title, shortText);
                 if (flag == false) {
                     returnValue = flag;
                     break;
@@ -116,7 +107,7 @@ public class LibertasCrawler implements Crawler {
         return returnValue;
     }
 
-    private boolean secondLevel(String url, String image, String title, String shortText, OutputStreamWriter writer){
+    private boolean secondLevel(String url, String image, String title, String shortText){
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -153,8 +144,20 @@ public class LibertasCrawler implements Crawler {
                 return false;
             }
 
-            sentimentAnalysis(url, image, title, shortText, text, fullDate, fullTime, writer);
-
+            text = StringEscapeUtils.unescapeHtml4(text).trim();
+            String translatedText = YandexTranslator.translate(text, "mk","en");
+            
+            title = StringEscapeUtils.unescapeHtml4(title).trim();
+            String translatedTitle = YandexTranslator.translate(title, "mk", "en");
+            
+            String source = "Либертас";
+            
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
+            
         }catch(Exception ex){
         }
 
@@ -181,12 +184,5 @@ public class LibertasCrawler implements Crawler {
         return false;
     }
 
-    private static void sentimentAnalysis(String url, String image, String title, String shortText, String text, String date, String time, OutputStreamWriter writer) throws IOException {
-        text = YandexTranslator.translate(text, "mk","en");
-        System.out.println("Vleze");
-        AlchemyAPIObject object = AlchemyAPIWrapper.sentimentAnalysisFromText(text, title, shortText, "", "Libertas");
-        writer.write(object.toString() + "\n");
-        System.out.println(object.toString());
-    }
 
 }

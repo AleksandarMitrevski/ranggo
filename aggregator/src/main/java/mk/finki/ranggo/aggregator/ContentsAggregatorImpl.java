@@ -1,36 +1,67 @@
 package mk.finki.ranggo.aggregator;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 //import java.io.StringWriter;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TimeZone;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 //import javax.xml.transform.Transformer;
 //import javax.xml.transform.TransformerException;
 //import javax.xml.transform.TransformerFactory;
 //import javax.xml.transform.dom.DOMSource;
 //import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.DomSerializer;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
+//import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.alchemyapi.api.AlchemyAPI;
 import com.alchemyapi.api.AlchemyAPI_CombinedParams;
 
-//import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-
+import mk.finki.ranggo.aggregator.ContentsAggregatorException.AggregatorMethod;
+import mk.finki.ranggo.aggregator.crawlers.impl.DnevnikCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.FokusCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.KurirCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.LibertasCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.NovaTVCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.RepublikaCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.TelmaCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.UtrinskiVesnikCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.VecherCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.VestCrawler;
+import mk.finki.ranggo.aggregator.crawlers.impl.Vesti24Crawler;
 import mk.finki.ranggo.aggregator.model.Concept;
 import mk.finki.ranggo.aggregator.model.Content;
 import mk.finki.ranggo.aggregator.model.Keyword;
@@ -39,7 +70,7 @@ import mk.finki.ranggo.aggregator.model.PersonEntity;
 import mk.finki.ranggo.aggregator.model.Taxonomy;
 import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.repository.PersonRepository;
-import mk.finki.ranggo.aggregator.ContentsAggregatorException.AggregatorMethod;
+import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 
 public class ContentsAggregatorImpl implements ContentsAggregator {
 	
@@ -157,6 +188,107 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 			throw new ContentsAggregatorException("xml parse exception", AggregatorMethod.HUFFINGTON_POST);
 		}catch(IOException exception){
 			throw new ContentsAggregatorException("can not fetch resource", AggregatorMethod.HUFFINGTON_POST);
+		}
+	}
+	
+	public void aggregateDnevnik() throws ContentsAggregatorException {
+		// TODO Auto-generated method stub
+		DnevnikCrawler crawler = new DnevnikCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateFokus() throws ContentsAggregatorException{
+		FokusCrawler crawler = new FokusCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateKurir() throws ContentsAggregatorException{
+		KurirCrawler crawler = new KurirCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateLibertas() throws ContentsAggregatorException{
+		LibertasCrawler crawler = new LibertasCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateNovaTV() throws ContentsAggregatorException{
+		NovaTVCrawler crawler = new NovaTVCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateRepublika() throws ContentsAggregatorException{
+		RepublikaCrawler crawler = new RepublikaCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateTelma() throws ContentsAggregatorException{
+		TelmaCrawler crawler = new TelmaCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+		
+	
+	public void aggregateUtrinskiVesnik() throws ContentsAggregatorException{
+		UtrinskiVesnikCrawler crawler = new UtrinskiVesnikCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+
+	public void aggregateVecher() throws ContentsAggregatorException{
+		VecherCrawler crawler = new VecherCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateVest() throws ContentsAggregatorException{
+		VestCrawler crawler = new VestCrawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	
+	public void aggregateVesti24() throws ContentsAggregatorException{
+		Vesti24Crawler crawler = new Vesti24Crawler();
+		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+		
+		for(AlchemyAPIAnalysisResult analysisResults : results){
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
 		}
 	}
 	
@@ -325,7 +457,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
 		}
 	}
-	
+		
 	private static AlchemyAPIAnalysisResult analyzeContent(AlchemyAPI alchemyapi, AlchemyAPI_CombinedParams alchemyapi_params, String contentURL) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
 		Document document = alchemyapi.URLGetCombined(contentURL, alchemyapi_params);
 		//System.out.println(getStringFromDocument(document));
@@ -603,6 +735,8 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		catch(IOException exception){}
 	}
 	
+	
+	
 	/*
 	private static String getStringFromDocument(Document doc){
 	    try {
@@ -734,4 +868,6 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 			this.taxonomies = taxonomies;
 		}
 	}
+
+	
 }

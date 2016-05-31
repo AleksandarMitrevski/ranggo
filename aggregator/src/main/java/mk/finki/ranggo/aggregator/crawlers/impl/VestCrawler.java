@@ -1,5 +1,7 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
+import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
@@ -11,6 +13,7 @@ import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -34,7 +37,8 @@ public class VestCrawler implements Crawler {
 
     private static String baseURL = "http://www.vest.mk";
     private List<String> categories;
-
+    List<AlchemyAPIAnalysisResult> results;
+ 
     public VestCrawler(){
         categories = new ArrayList<String>();
         categories.add("?ItemID=248611FB8F724A4D89E75953D9321EF0");
@@ -44,21 +48,12 @@ public class VestCrawler implements Crawler {
         categories.add("?ItemID=86800C325C886149A708CBDE4D0CCA18");
         categories.add("?ItemID=FD8578D49B477643AE86230043ED205A");
         categories.add("?ItemID=5C4AEF021FFB6642B91F9FC3C0A7E4B9");
+    	results = new ArrayList<AlchemyAPIAnalysisResult>();
+
     }
 
-    public static void main(String[] args){
-        VestCrawler crawler = new VestCrawler();
-        crawler.crawl();
-    }
-
-    public void crawl() {
-        OutputStreamWriter writer = null;
+    public  List<AlchemyAPIAnalysisResult> crawl() {
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/vest.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|originalTitle|translatedTitle|originalText|translatedText|originalShortText|translatedShortText|source|datePublished\n");
             for(int i=0;i<categories.size();i++){
                 try {
                     String url = baseURL + "/" +  categories.get(i);
@@ -85,7 +80,7 @@ public class VestCrawler implements Crawler {
                         if(!newsURL.equals("")) {
                             newsURL = baseURL + newsURL.trim();
                             System.out.println("\t\tNews url: " + newsURL);
-                            if(!extractDataFromPage(newsURL, writer)){
+                            if(!extractDataFromPage(newsURL)){
                                 break;
                             }
                         }
@@ -110,17 +105,12 @@ public class VestCrawler implements Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if(writer!=null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            
         }
+        return results;
     }
 
-    private boolean extractDataFromPage(String url, OutputStreamWriter writer) {
+    private boolean extractDataFromPage(String url) {
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -152,22 +142,21 @@ public class VestCrawler implements Crawler {
             text = StringEscapeUtils.unescapeHtml4(text).trim();
             String translatedText = YandexTranslator.translate(text,"mk","en");
 
-            shortText = StringEscapeUtils.unescapeHtml4(shortText).trim();
-            String translatedShortText = YandexTranslator.translate(shortText,"mk","en");
-
             date = StringEscapeUtils.unescapeHtml4(date).trim();
 
             if(!checkDate(date)){
-                System.out.println("Vleze za date: " + date);
                 return false;
             }
             if(text.length()<20){
-                System.out.println("Vleze za text: " + text.length());
                 return false;
             }
-            String source = "Vest";
-            System.out.println(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-            writer.write(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
+            String source = "Вест";
+            
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
 
             return true;
         } catch(SocketTimeoutException e){
@@ -176,7 +165,7 @@ public class VestCrawler implements Crawler {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            return extractDataFromPage(url, writer);
+            return extractDataFromPage(url);
         }catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -185,7 +174,10 @@ public class VestCrawler implements Crawler {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return false;
     }
 

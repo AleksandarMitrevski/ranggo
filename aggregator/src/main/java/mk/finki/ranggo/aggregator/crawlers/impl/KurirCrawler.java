@@ -1,5 +1,7 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
+import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
@@ -11,6 +13,7 @@ import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -24,6 +27,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Simona on 4/10/2016.
@@ -31,27 +36,19 @@ import java.nio.charset.StandardCharsets;
 public class KurirCrawler implements Crawler {
 
     private static String baseURL = "http://kurir.mk";
-
-    public static void main(String[] args){
-        KurirCrawler crawler = new KurirCrawler();
-        crawler.crawl();
+    	
+    List<AlchemyAPIAnalysisResult> results;
+    
+    public KurirCrawler(){
+    	results = new ArrayList<AlchemyAPIAnalysisResult>();
     }
 
-    public void crawl() {
-        OutputStreamWriter writer = null;
+    public List<AlchemyAPIAnalysisResult> crawl() {
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/kurir.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|originalTitle|translatedTitle|originalText|translatedText|originalShortText|translatedShortText|source|datePublished\n");
-
             int count = 1;
             while(true) {
                 try {
                     String url = baseURL + "/" + HelperClass.getToday().replaceAll("-", "/") + "/page/" + count + "/";
-
-                    System.out.println("BASE URL: " + url);
                     URLConnection conn = new URL(url).openConnection();
                     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
                     String inputLine;
@@ -74,8 +71,7 @@ public class KurirCrawler implements Crawler {
                     for (int i = 0; i < tableRows.getLength(); i++) {
                         Node node = tableRows.item(i);
                         String newsURL = (String) xpathObj.evaluate("./article/a/@href", node, XPathConstants.STRING);
-                        System.out.println("\t\t" + newsURL);
-                        extractDataFromPage(newsURL, writer);
+                        extractDataFromPage(newsURL);
                     }
                 }catch(SocketTimeoutException e){
                     try {
@@ -98,17 +94,12 @@ public class KurirCrawler implements Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         }  finally{
-            if(writer != null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            
         }
+        return results;
     }
 
-    public void extractDataFromPage(String url, OutputStreamWriter writer){
+    public void extractDataFromPage(String url){
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -140,15 +131,17 @@ public class KurirCrawler implements Crawler {
             text = StringEscapeUtils.unescapeHtml4(text).trim();
             String translatedText = YandexTranslator.translate(text,"mk","en");
 
-            shortText = StringEscapeUtils.unescapeHtml4(shortText).trim();
-            String translatedShortText = YandexTranslator.translate(shortText,"mk","en");
-
+            
             date = StringEscapeUtils.unescapeHtml4(date).trim();
 
-            String source = "Kurir";
-            System.out.println(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-            writer.write(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
+            String source = "Курир";
 
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+           
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
 
         } catch(SocketTimeoutException ex){
             try {
@@ -156,7 +149,7 @@ public class KurirCrawler implements Crawler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            extractDataFromPage(url, writer);
+            extractDataFromPage(url);
         } catch(MalformedURLException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -165,6 +158,9 @@ public class KurirCrawler implements Crawler {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

@@ -1,5 +1,7 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
+import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
@@ -11,6 +13,7 @@ import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -37,7 +40,8 @@ public class NovaTVCrawler implements Crawler {
     private static String baseURL = "http://novatv.mk";
     private List<String> categories;
     private Map<String, String> months;
-
+    private List<AlchemyAPIAnalysisResult> results;
+   
     public NovaTVCrawler(){
         categories = new ArrayList<String>();
         categories.add("/category/makedonija/");
@@ -57,22 +61,12 @@ public class NovaTVCrawler implements Crawler {
         months.put("ноември","11");
         months.put("декември","12");
 
+        results = new ArrayList<AlchemyAPIAnalysisResult>();
     }
 
-    public static void main(String[] args){
-        NovaTVCrawler crawler = new NovaTVCrawler();
-        crawler.crawl();
-    }
-
-    public void crawl() {
-        OutputStreamWriter writer = null;
+    public List<AlchemyAPIAnalysisResult> crawl() {
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/novatv.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|originalTitle|translatedTitle|originalText|translatedText|originalShortText|translatedShortText|source|datePublished\n");
-
+           
             for(int i=0;i<categories.size();i++){
                 String category = categories.get(i);
                 int count = 1;
@@ -100,7 +94,7 @@ public class NovaTVCrawler implements Crawler {
                         if(count == 1){
                             String firstURL = (String) xpathObj.evaluate("//div[contains(@id,'main-content')]/article/h3/a/@href", doc, XPathConstants.STRING);
                             System.out.println("\t\tNews url: " + firstURL);
-                            if(!extractDataFromPage(firstURL, writer)){
+                            if(!extractDataFromPage(firstURL)){
                                 flag = false;
                                 break;
                             }
@@ -115,7 +109,7 @@ public class NovaTVCrawler implements Crawler {
                             Node node = tableRows.item(j);
                             String newsURL = (String)xpathObj.evaluate("./div[1]/a/@href",node, XPathConstants.STRING);
                             System.out.println("\t\tNews url: " + newsURL);
-                            if(!extractDataFromPage(newsURL, writer)){
+                            if(!extractDataFromPage(newsURL)){
                                 flag = false;
                                 break;
                             }
@@ -144,18 +138,13 @@ public class NovaTVCrawler implements Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if(writer != null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            
         }
+        return results;
     }
 
 
-    private boolean extractDataFromPage(String url, OutputStreamWriter writer){
+    private boolean extractDataFromPage(String url){
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -191,13 +180,15 @@ public class NovaTVCrawler implements Crawler {
             String translatedText = YandexTranslator.translate(text, "mk", "en");
 
             date = StringEscapeUtils.unescapeHtml4(date).trim();
-            String shortText = "";
-            String translatedShortText = "";
-
-            String source = "Nova TV";
-            System.out.println(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-            writer.write(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-
+            
+            String source = "Нова ТВ";
+            
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
+            
             return true;
         } catch(SocketTimeoutException e ){
             e.printStackTrace();
@@ -206,7 +197,7 @@ public class NovaTVCrawler implements Crawler {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            return extractDataFromPage(url, writer);
+            return extractDataFromPage(url);
         }catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -215,7 +206,10 @@ public class NovaTVCrawler implements Crawler {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return false;
     }
 

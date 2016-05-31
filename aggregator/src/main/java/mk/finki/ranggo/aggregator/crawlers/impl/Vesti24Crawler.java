@@ -1,5 +1,7 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
+import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
@@ -11,6 +13,7 @@ import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -33,6 +36,7 @@ import java.util.List;
 public class Vesti24Crawler implements Crawler {
     private static String baseURL = "http://24vesti.mk";
     private List<String> categories;
+    List<AlchemyAPIAnalysisResult> results;
 
     public Vesti24Crawler(){
         categories = new ArrayList<String>();
@@ -46,22 +50,11 @@ public class Vesti24Crawler implements Crawler {
         categories.add("kultura");
         categories.add("sport");
         categories.add("tehnologija");
+    	results = new ArrayList<AlchemyAPIAnalysisResult>();
     }
 
-    public static void main(String[] args){
-        Vesti24Crawler crawler = new Vesti24Crawler();
-        crawler.crawl();
-    }
-
-    public void crawl() {
-        OutputStreamWriter writer =  null;
+    public  List<AlchemyAPIAnalysisResult> crawl() {
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/24vesti.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|originalTitle|translatedTitle|originalText|translatedText|originalShortText|translatedShortText|source|datePublished\n");
-
             for(int i=0;i<categories.size();i++){
                 String category = categories.get(i);
                 int count = 0;
@@ -95,10 +88,8 @@ public class Vesti24Crawler implements Crawler {
                             }
                             String newsURL = (String)xpathObj.evaluate("./td/div[1]/span/a/@href", node, XPathConstants.STRING);
                             newsURL = baseURL + newsURL;
-                            System.out.println("\t\t" + newsURL);
-                            extractDataFromPage(newsURL, date, writer);
+                            extractDataFromPage(newsURL, date);
                         }
-
                     } catch(SocketTimeoutException e){
                         e.printStackTrace();
                         try {
@@ -121,17 +112,12 @@ public class Vesti24Crawler implements Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         } finally{
-            if(writer != null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            
         }
+        return results;
     }
 
-    private void extractDataFromPage(String url, String date, OutputStreamWriter writer){
+    private void extractDataFromPage(String url, String date){
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -165,10 +151,14 @@ public class Vesti24Crawler implements Crawler {
             String shortText = "";
             String translatedShortText = "";
 
-            String source = "24 VESTI";
-            System.out.println(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-            writer.write(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
+            String source = "24 вести";
 
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
+            
         } catch(SocketTimeoutException e){
             e.printStackTrace();
             try {
@@ -176,7 +166,7 @@ public class Vesti24Crawler implements Crawler {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            extractDataFromPage(url, date, writer);
+            extractDataFromPage(url, date);
             return;
         } catch(MalformedURLException e) {
             e.printStackTrace();
@@ -186,7 +176,10 @@ public class Vesti24Crawler implements Crawler {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private boolean checkDate(String dateTime){

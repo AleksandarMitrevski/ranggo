@@ -1,5 +1,6 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
@@ -20,10 +21,12 @@ public class TwitterCrawler implements Crawler{
         crawler.crawl();
     }
 
-    public void crawl() {
+    public  List<AlchemyAPIAnalysisResult> crawl() {
         //TODO: za site lichnosti koi gi imame vo baza da se povikuva metodot getDataForKeyword
         getDataForKeyword("Barack Obama");
         getDataForKeyword("Trump");
+        
+        return null;
     }
 
     public void getDataForKeyword(String keyword){

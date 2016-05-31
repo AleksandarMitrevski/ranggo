@@ -1,6 +1,9 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
+import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
+import mk.finki.ranggo.aggregator.helper.HelperClass;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -10,6 +13,7 @@ import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -33,7 +37,8 @@ public class VecherCrawler implements Crawler{
 
     private static String baseURL = "http://vecer.mk";
     private List<String> categories;
-
+    List<AlchemyAPIAnalysisResult> results;
+    
     public VecherCrawler(){
         categories = new ArrayList<String>();
         categories.add("makedonija");
@@ -44,26 +49,16 @@ public class VecherCrawler implements Crawler{
         categories.add("kultura");
         categories.add("zabavna");
         categories.add("sport");
+        
+        results = new ArrayList<AlchemyAPIAnalysisResult>();
     }
 
-    public static void main(String[] args){
-        VecherCrawler crawler = new VecherCrawler();
-        crawler.crawl();
-    }
-
-    public void crawl() {
-        OutputStreamWriter writer = null;
+    public  List<AlchemyAPIAnalysisResult> crawl() {
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/vecher.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|originalTitle|translatedTitle|originalText|translatedText|originalShortText|translatedShortText|source|datePublished\n");
-
+           
             for(int i=0;i<categories.size();i++){
                 try {
                     String url = baseURL + "/" +  categories.get(i);
-                    System.out.println("URL: " + url);
                     URLConnection conn = new URL(url).openConnection();
                     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
                     String inputLine;
@@ -85,7 +80,7 @@ public class VecherCrawler implements Crawler{
                         String newsURL = (String)xpathObj.evaluate("./div/h3/a/@href", node, XPathConstants.STRING);
                         newsURL = baseURL + newsURL;
                         System.out.println("\t\tNews url: " + newsURL);
-                        extractDataFromPage(newsURL, writer);
+                        extractDataFromPage(newsURL);
                     }
 
                 } catch(SocketTimeoutException ex){
@@ -107,17 +102,12 @@ public class VecherCrawler implements Crawler{
         } catch (IOException e) {
             e.printStackTrace();
         } finally{
-            if(writer != null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            
         }
+        return results;
     }
 
-    private static void extractDataFromPage(String url, OutputStreamWriter writer){
+    private void extractDataFromPage(String url){
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -149,21 +139,24 @@ public class VecherCrawler implements Crawler{
             text = StringEscapeUtils.unescapeHtml4(text).trim();
             String translatedText = YandexTranslator.translate(text,"mk","en");
 
-            shortText = StringEscapeUtils.unescapeHtml4(shortText).trim();
-            String translatedShortText = YandexTranslator.translate(shortText,"mk","en");
-
             date = StringEscapeUtils.unescapeHtml4(date).trim();
 
-            String source = "Vecher";
-            System.out.println(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-            writer.write(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
+            String source = "Вечер";
+            
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+           
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
+            
         } catch(SocketTimeoutException e){
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            extractDataFromPage(url, writer);
+            extractDataFromPage(url);
         }catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -172,6 +165,9 @@ public class VecherCrawler implements Crawler{
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

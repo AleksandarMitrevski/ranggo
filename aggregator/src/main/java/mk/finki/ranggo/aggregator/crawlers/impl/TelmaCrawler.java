@@ -1,7 +1,23 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
-import mk.finki.ranggo.aggregator.crawlers.Crawler;
-import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.DomSerializer;
@@ -10,19 +26,13 @@ import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
+import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
+import mk.finki.ranggo.aggregator.crawlers.Crawler;
+import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 
 /**
  * Created by Simona on 4/11/2016.
@@ -30,20 +40,15 @@ import java.nio.charset.StandardCharsets;
 public class TelmaCrawler implements Crawler {
 
     private static String baseURL = "http://www.telma.com.mk";
-
-    public static void main(String[] args){
-        TelmaCrawler crawler = new TelmaCrawler();
-        crawler.crawl();
+    
+    List<AlchemyAPIAnalysisResult> results;
+    
+    public TelmaCrawler(){
+    	results = new ArrayList<AlchemyAPIAnalysisResult>();
     }
 
-    public void crawl() {
-        OutputStreamWriter writer = null;
+    public  List<AlchemyAPIAnalysisResult> crawl() {
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/telma.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|originalTitle|translatedTitle|originalText|translatedText|originalShortText|translatedShortText|source|datePublished\n");
             String url = baseURL + "/vesti";
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -61,14 +66,13 @@ public class TelmaCrawler implements Crawler {
             XPathFactory xfactory = XPathFactory.newInstance();
             XPath xpathObj = xfactory.newXPath();
             NodeList tableRows = (NodeList) xpathObj.evaluate("//div[contains(@class,'view-content')]/table/tbody/tr/td", doc, XPathConstants.NODESET);
-            System.out.println(tableRows.getLength());
             for(int i=0;i<tableRows.getLength();i++){
                 Node node = tableRows.item(i);
                 String date = (String)xpathObj.evaluate("./div/span/div[2]/div//text()", node, XPathConstants.STRING);
                 String newsURL = (String)xpathObj.evaluate("./div/span/div[2]/h2/a/@href",node, XPathConstants.STRING);
                 newsURL = baseURL + newsURL.trim();
                 System.out.println("\t\t" + newsURL);
-                extractDataFromPage(newsURL, date,  writer);
+                extractDataFromPage(newsURL, date);
             }
 
         } catch(SocketTimeoutException e){
@@ -78,7 +82,7 @@ public class TelmaCrawler implements Crawler {
                 e1.printStackTrace();
             }
             crawl();
-            return;
+            return null;
         }catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -88,17 +92,12 @@ public class TelmaCrawler implements Crawler {
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         } finally{
-            if(writer != null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+           
         }
+        return results;
     }
 
-    private void extractDataFromPage(String url, String date, OutputStreamWriter writer) {
+    private void extractDataFromPage(String url, String date) {
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -132,9 +131,14 @@ public class TelmaCrawler implements Crawler {
             String shortText = "";
             String translatedShortText = "";
 
-            String source = "Telma";
-            System.out.println(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-            writer.write(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
+            String source = "Телма";
+            
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+           
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
 
 
         } catch(SocketTimeoutException e){
@@ -144,7 +148,7 @@ public class TelmaCrawler implements Crawler {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            extractDataFromPage(url, date, writer);
+            extractDataFromPage(url, date);
             return;
         }catch (MalformedURLException e) {
             e.printStackTrace();
@@ -154,7 +158,10 @@ public class TelmaCrawler implements Crawler {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
     }
 

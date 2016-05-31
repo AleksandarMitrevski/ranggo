@@ -1,5 +1,7 @@
 package mk.finki.ranggo.aggregator.crawlers.impl;
 
+import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResult;
+import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
@@ -11,6 +13,7 @@ import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -24,6 +27,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Simona on 4/11/2016.
@@ -32,20 +37,14 @@ public class RepublikaCrawler implements Crawler {
 
     private static String baseURL = "http://republika.mk/";
 
-    public static void main(String[] args){
-        RepublikaCrawler crawler = new RepublikaCrawler();
-        crawler.crawl();
+    private List<AlchemyAPIAnalysisResult> results;
+
+    public RepublikaCrawler() {
+    	results = new ArrayList<AlchemyAPIAnalysisResult>();
     }
-
-    public void crawl() {
-        OutputStreamWriter writer = null;
+    
+    public  List<AlchemyAPIAnalysisResult> crawl() {
         try {
-            writer = new OutputStreamWriter(
-                    new FileOutputStream("files/republika.csv", true),
-                    Charset.forName("utf-8").newEncoder()
-            );
-            writer.write("url|originalTitle|translatedTitle|originalText|translatedText|originalShortText|translatedShortText|source|datePublished\n");
-
             int count = 1;
             boolean flag = true;
             while(flag){
@@ -69,7 +68,7 @@ public class RepublikaCrawler implements Crawler {
                     NodeList tableRows = (NodeList) xpathObj.evaluate("//div[contains(@id,'content')]/article", doc, XPathConstants.NODESET);
                     for(int i=0;i<tableRows.getLength();i++){
                         String newsURL = (String)xpathObj.evaluate("./a/@href",tableRows.item(i), XPathConstants.STRING);
-                        if(!extractDataFromPage(newsURL, writer)){
+                        if(!extractDataFromPage(newsURL)){
                             flag = false;
                             break;
                         }
@@ -94,17 +93,12 @@ public class RepublikaCrawler implements Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         } finally{
-            if(writer!=null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            
         }
+        return results;
     }
 
-    private boolean extractDataFromPage(String url, OutputStreamWriter writer){
+    private boolean extractDataFromPage(String url){
         try {
             URLConnection conn = new URL(url).openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
@@ -143,9 +137,13 @@ public class RepublikaCrawler implements Crawler {
             String shortText = "";
             String translatedShortText = "";
 
-            String source = "Republika";
-            System.out.println(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
-            writer.write(url + "|" + title + "|" + translatedTitle + "|" + text + "|" + translatedText + "|" + shortText + "|" + translatedShortText + "|" + source + "|" + date + "\n");
+            String source = "Република";
+            
+            String today = HelperClass.getToday();
+            
+            //get alchemyapi analysis result
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            results.add(result);
 
             return true;
         } catch(SocketTimeoutException e){
@@ -154,7 +152,7 @@ public class RepublikaCrawler implements Crawler {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            return extractDataFromPage(url, writer);
+            return extractDataFromPage(url);
         } catch(MalformedURLException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -163,7 +161,10 @@ public class RepublikaCrawler implements Crawler {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return false;
     }
 
