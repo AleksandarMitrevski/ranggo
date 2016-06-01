@@ -9,9 +9,14 @@ public interface ContentsSelector {
 	
 	public List<Person> getAllPersons();
 	
+	public List<Person> getTop5People();
+	
 	public List<Content> getAllContents();
 	
 	public List<Content> getRatingsForPerson(String id);
 	
 	public List<Content> getLatestNews();
+	
+	public List<Double> getAverageRatingForPerson(String id);
+	
 }

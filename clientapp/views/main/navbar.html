@@ -1,0 +1,24 @@
+<div id="menu" class="row">
+  <div class="col-xs-12">
+    <nav class="navbar navbar-inverse" role="navigation" style="background-color: transparent; border : 0; margin-bottom:0%;">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <a class="navbar-brand" href="index.html" style="color : #26262a;">Ranggo</a>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li ui-sref-active="active"
+              ng-repeat="i in $root.menuItems">
+            <a ui-sref="{{ i.state }}">
+              {{ i.name | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</div>

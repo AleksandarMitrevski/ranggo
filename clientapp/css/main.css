@@ -1,0 +1,31 @@
+
+.main-page {
+    margin-top: 50px;
+}
+
+#menu{
+    font-family: 'Raleway';
+    background-color: white;
+}
+
+#menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li > a{
+    color: black;
+}
+
+#menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li > a:hover{
+    color: darkred;
+}
+
+#menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li.active{
+    background-color: transparent;
+}
+
+#menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li.active > a{
+    background-color: transparent;
+    color: darkred;
+}
+
+.item img{
+    height: 300px !important;
+    max-height: 300px !important;
+}

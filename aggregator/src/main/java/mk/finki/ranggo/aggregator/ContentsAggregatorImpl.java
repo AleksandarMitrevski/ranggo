@@ -407,12 +407,21 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		
 		for(int i = 0; i < CONTENT_COUNT; i++){
 			try{
+				System.out.println("Pred da procesira");
 				this.processStatic(articles[i], titles[i], timestamps[i]);
 			}
-			catch(ParserConfigurationException exception){} //these exceptions should be logged - only a single link fails  
-			catch(SAXException exception){}
-			catch(XPathExpressionException exception){}
-			catch(IOException exception){}
+			catch(ParserConfigurationException exception){
+				exception.printStackTrace();
+			} //these exceptions should be logged - only a single link fails  
+			catch(SAXException exception){
+				exception.printStackTrace();
+			}
+			catch(XPathExpressionException exception){
+				exception.printStackTrace();
+			}
+			catch(IOException exception){
+				exception.printStackTrace();
+			}
 		}
 	}
 	
@@ -446,14 +455,15 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	
 	private void processStatic(String URL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
 		//do not analyze it if it exists in the data store (check by url)
+	
 		if(contentRepository.findBySourceUrl(URL) == null){
 			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
-			
+			System.out.println(analysisResults);
 			analysisResults.setType("STATIC");
 			analysisResults.setUrl(URL);
 			analysisResults.setTitle(title);
 			analysisResults.setTimestamp(timestamp);
-			
+			System.out.println("Pred da napravi persist");
 			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
 		}
 	}
@@ -680,6 +690,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 			content.setTimestamp(data.getTimestamp());
 			
 			content = contentRepository.save(content);
+			System.out.println("Go zachuvalo content");
 			
 			//fetch short biography and picture url for each person from dbpedia
 			

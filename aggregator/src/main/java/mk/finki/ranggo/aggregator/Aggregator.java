@@ -9,6 +9,8 @@ import java.util.TimeZone;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import mk.finki.ranggo.aggregator.model.Content;
+import mk.finki.ranggo.aggregator.model.Person;
 import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.repository.PersonRepository;
 
@@ -26,27 +28,27 @@ public class Aggregator
 		ContentsAggregator aggregator = new ContentsAggregatorImpl(alchemyapi_key, personRepository, contentRepository);
 		
 		//populates the data store with the test dataset
-		Aggregator.test(aggregator);
+		//Aggregator.test(aggregator);
 		
 		
 		Aggregator.update(null, aggregator);
 		
-		/*
+		
 		//data storage example (does not generate duplicates due to 'unique' constraints)
 		//see http://github.com/Schenock/ranggo/tree/master/webapp/src/main/java/mk/finki/unip/ranggo/service/impl/ContentsAggregatorImpl.java
+//		
+//		Person person = new Person();
+//		Content content = new Content();
+//		
+//		person.setName("Donald Trump");
+//		content.setType("GOOGLE_NEWS");
+//		
+//		person = personRepository.save(person);
+//		content = contentRepository.save(content);
+//		
+//		System.out.println("Person ID: " + person.getId());
+//		System.out.println("Content ID: " + content.getId());
 		
-		Person person = new Person();
-		Content content = new Content();
-		
-		person.setName("Donald Trump");
-		content.setType("GOOGLE_NEWS");
-		
-		person = personRepository.save(person);
-		content = contentRepository.save(content);
-		
-		System.out.println("Person ID: " + person.getId());
-		System.out.println("Content ID: " + content.getId());
-		*/
 		
 		context.close();
 	}
