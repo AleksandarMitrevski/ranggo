@@ -19,4 +19,6 @@ public interface ContentsSelector {
 	
 	public List<Double> getAverageRatingForPerson(String id);
 	
+	public List<String> getCategories();
+	
 }

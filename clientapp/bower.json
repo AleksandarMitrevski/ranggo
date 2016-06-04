@@ -26,5 +26,8 @@
   },
   "resolutions": {
     "angular": "~1.4.0"
+  },
+  "devDependencies": {
+    "angular-timeline": "^1.6.2"
   }
 }

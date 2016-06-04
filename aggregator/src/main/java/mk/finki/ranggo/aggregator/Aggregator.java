@@ -88,17 +88,17 @@ public class Aggregator
 				//log this
 			}
 	    	
-	    	try{
-	    		aggregator.aggregateDnevnik();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
+//	    	try{
+//	    		aggregator.aggregateDnevnik();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
 	    	
-	    	try{
-	    		aggregator.aggregateFokus();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
+//	    	try{
+//	    		aggregator.aggregateFokus();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
 	    	
 	    	try{
 	    		aggregator.aggregateKurir();

@@ -88,5 +88,23 @@ public class ContentsSelectorImpl implements ContentsSelector {
 		res.add(score/count);
 		return res;
 	}
+	
+	public List<String> getCategories(){
+		List<Person> people = getAllPersons();
+		List<String> result = new ArrayList<String>();
+		
+		for(Person p : people){
+			if(p.getCategories() == null){
+				continue;
+			}
+			for(String category : p.getCategories()){
+				if(!result.contains(category)){
+					result.add(category);
+				}
+			}
+		}
+		
+		return result;
+	}
 
 }

@@ -65,4 +65,10 @@ public class IndexController {
 	public List<Content> getAllContents(){
 		return selector.getAllContents();
 	}
+	
+	@RequestMapping(value={"/categories"}, method=RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<String> getCategories(){
+		return selector.getCategories();
+	}
 }

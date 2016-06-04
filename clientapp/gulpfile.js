@@ -34,7 +34,8 @@ var CSS_LIB = [
     'bower_components/ngQuickDate/dist/ng-quick-date-plus-default-theme.css',
     'bower_components/angular-bootstrap-colorpicker/css/colorpicker.css',
     'bower_components/angular-xeditable/dist/css/xeditable.css',
-    'bower_components/angular-carousel/dist/angular-carousel.css'
+    'bower_components/angular-carousel/dist/angular-carousel.css',
+    'bower_components/angular-material/angular-material.css'
 ];
 
 var CSS_APP = [
@@ -74,7 +75,10 @@ var JS_LIB = [
     'bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.min.js',
     'bower_components/angular-xeditable/dist/js/xeditable.js',
     'bower_components/angular-touch/angular-touch.js',
-    'bower_components/angular-carousel/dist/angular-carousel.js'
+    'bower_components/angular-carousel/dist/angular-carousel.js',
+    'bower_components/angular-animate/angular-animate.js',
+    'bower_components/angular-aria/angular-aria.js',
+    'bower_components/angular-material/angular-material.js'
 ];
 
 var JS_APP = [

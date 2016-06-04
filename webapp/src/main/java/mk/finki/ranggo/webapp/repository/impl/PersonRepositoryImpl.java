@@ -1,13 +1,15 @@
 package mk.finki.ranggo.webapp.repository.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import mk.finki.ranggo.webapp.repository.PersonRepositoryAuxiliary;
 import mk.finki.ranggo.webapp.model.Person;
+import mk.finki.ranggo.webapp.repository.PersonRepositoryAuxiliary;
 
 @Repository
 public class PersonRepositoryImpl implements PersonRepositoryAuxiliary {
@@ -31,5 +33,10 @@ public class PersonRepositoryImpl implements PersonRepositoryAuxiliary {
 			//dbpediaUrl can not be null
 			return null;
 		}
+	}
+	
+	public List<Person> findAll(){
+		Query query = new Query();
+		return mongoTemplate.find(query, Person.class);
 	}
 }

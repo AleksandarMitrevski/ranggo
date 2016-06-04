@@ -8,6 +8,10 @@
     background-color: white;
 }
 
+.raleway-font{
+    font-family: 'Raleway';
+}
+
 #menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li > a{
     color: black;
 }
@@ -27,5 +31,53 @@
 
 .item img{
     height: 300px !important;
+    width: 100%;
     max-height: 300px !important;
+}
+
+.customDiv{
+    padding-top: 2%;
+    padding-bottom: 2%;
+    background-color: #ddd;
+    margin-right: 2%;
+}
+
+.newsDiv{
+    border-left: 3px #F0BE62 solid;
+}
+
+.lato-font{
+    font-family: 'Lato', sans-serif;
+}
+
+.innerDiv{
+    background-color: white;
+}
+
+a{
+    color: black;
+}
+
+a:hover{
+    color: #8B9993;
+    text-decoration: none;
+}
+
+.tagDiv{
+    background-color: #F0BE62;
+    display: inline-block;
+    padding: 1%;
+    margin: 1%;
+}
+
+.md-button.md-fab {
+    line-height: 5.6rem;
+    min-width: 0;
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 50%;
+}
+
+.errorDiv{
+    background-color: #D4A190;
 }

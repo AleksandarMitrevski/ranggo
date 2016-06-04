@@ -18,6 +18,9 @@ WPAngularStarter.config([
         main: {
           templateUrl: 'views/main/main.html',
           controller: "FirstPageController"
+        },
+        footer:{
+          templateUrl: 'views/main/footer.html'
         }
       }
     });

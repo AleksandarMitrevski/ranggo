@@ -20,6 +20,16 @@ WPAngularStarter.factory('RanggoService', [
                 url: root + '/averageRatings/:id',
                 method: 'GET',
                 isArray: true
+            },
+            getCategories:{
+                url: root + '/categories',
+                method: 'GET',
+                isArray: true
+            },
+            getLatestNews:{
+                url: root + '/latest-news',
+                method: 'GET',
+                isArray: true
             }
         });
     }
