@@ -46,6 +46,12 @@
     border-left: 3px #F0BE62 solid;
 }
 
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
 .lato-font{
     font-family: 'Lato', sans-serif;
 }
@@ -80,4 +86,26 @@ a:hover{
 
 .errorDiv{
     background-color: #D4A190;
+}
+
+.categoriesDiv{
+    padding-left: 3%;
+    padding-right:3%
+}
+
+.no-class-button{
+    background-color: transparent;
+    padding: 0%;
+    color: black;
+}
+
+
+.no-class-button:hover{
+    color: white;
+}
+
+.searchImg{
+    height: 100px !important;
+    max-height: 100px !important;
+    width: 100%;
 }

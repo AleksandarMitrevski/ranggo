@@ -66,6 +66,11 @@ WPAngularStarter.controller('FirstPageController',
                         var flag = false;
                         for(var j=0;j<$scope.people.length;j++){
                             if($scope.people[j].name == data[i].name){
+                                if(!$scope.people[j].dbpediaUrl){
+                                    if(data[i].dbpediaUrl){
+                                        $scope.people[j] = data[i];
+                                    }
+                                }
                                 flag = true;
                                 break;
                             }

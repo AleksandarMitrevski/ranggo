@@ -25,15 +25,38 @@ WPAngularStarter.config([
       }
     });
 
+    $stateProvider.state('root.categories', {
+      url: 'categories',
+      views: {
+        'main@': {
+          templateUrl: "views/main/people/categories.html",
+          controller: "CategoriesController"
+        }
+      }
+    });
+
+    $stateProvider.state('root.people', {
+      url: 'people/:id',
+      views: {
+        'main@': {
+          templateUrl: "views/main/people/personProfile.html",
+          controller: "PersonController"
+        }
+      }
+    });
+
   }])
   .run([
     '$rootScope',
     function($rootScope) {
-
       $rootScope.menuItems = [{
         state: 'root',
-        icon: 'fa-home',
+        icon: 'glyphicon glyphicon-home',
         name: 'HOME'
+      },{
+        state: 'root.categories',
+        icon: 'glyphicon glyphicon-search',
+        name: 'FIND PEOPLE'
       }];
 
     }]);
