@@ -17,23 +17,23 @@
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner" role="listbox">
                             <div class="item active">
-                                <img class="img img-responsive" src="{{top5People[0].pictureUrl}}" alt="{{top5People[0].name}}">
+                                <a href="/#/people/{{top5People[0].id}}"><img class="img img-responsive" src="{{top5People[0].pictureUrl}}" alt="{{top5People[0].name}}"></a>
                             </div>
 
                             <div class="item">
-                                <img src="{{top5People[1].pictureUrl}}" alt="{{top5People[1].name}}">
+                                <a href="/#/people/{{top5People[1].id}}"><img class="img img-responsive" src="{{top5People[1].pictureUrl}}" alt="{{top5People[1].name}}"></a>
                             </div>
 
                             <div class="item">
-                                <img src="{{top5People[2].pictureUrl}}" alt="{{top5People[2].name}}">
+                                <a href="/#/people/{{top5People[2].id}}"><img class="img img-responsive" src="{{top5People[2].pictureUrl}}" alt="{{top5People[2].name}}"></a>
                             </div>
 
                             <div class="item">
-                                <img src="{{top5People[3].pictureUrl}}" alt="{{top5People[3].name}}">
+                                <a href="/#/people/{{top5People[3].id}}"><img class="img img-responsive" src="{{top5People[3].pictureUrl}}" alt="{{top5People[3].name}}"></a>
                             </div>
 
                             <div class="item">
-                                <img src="{{top5People[4].pictureUrl}}" alt="{{top5People[4].name}}">
+                                <a href="/#/people/{{top5People[4].id}}"><img class="img img-responsive" src="{{top5People[4].pictureUrl}}" alt="{{top5People[4].name}}"></a>
                             </div>
                         </div>
 
@@ -97,7 +97,7 @@
                     </div>
                     <div class="col-xs-12">
                         <div class="tagDiv" ng-repeat="category in categories">
-                                <a href="">{{category}}</a>
+                                <a href="/#/categories?category={{category}}">{{category}}</a>
                         </div>
                     </div>
                     <div class="col-xs-12 text-right">

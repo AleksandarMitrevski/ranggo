@@ -21,4 +21,6 @@ public interface ContentsSelector {
 	
 	public List<String> getCategories();
 	
+	public Person findByID(String id);
+	
 }

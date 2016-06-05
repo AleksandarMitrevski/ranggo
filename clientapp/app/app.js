@@ -9,6 +9,7 @@ var WPAngularStarter = angular.module('wp-angular-starter', [
   'ui.select',
   'ngQuickDate',
   'angular-carousel',
-  'ngMaterial'
+  'ngMaterial',
+  'googlechart'
 ]);
 

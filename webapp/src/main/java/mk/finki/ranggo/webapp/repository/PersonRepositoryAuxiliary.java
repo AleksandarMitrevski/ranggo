@@ -9,4 +9,5 @@ public interface PersonRepositoryAuxiliary {
 	Person findByName(String name);
 	Person findByDbpediaUrl(String dbpediaUrl);
 	List<Person> findAll();
+	Person findByID(String id);
 }

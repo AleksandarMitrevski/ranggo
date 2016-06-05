@@ -78,7 +78,8 @@ var JS_LIB = [
     'bower_components/angular-carousel/dist/angular-carousel.js',
     'bower_components/angular-animate/angular-animate.js',
     'bower_components/angular-aria/angular-aria.js',
-    'bower_components/angular-material/angular-material.js'
+    'bower_components/angular-material/angular-material.js',
+    "bower_components/angular-google-chart/ng-google-chart.js",
 ];
 
 var JS_APP = [

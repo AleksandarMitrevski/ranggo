@@ -71,4 +71,10 @@ public class IndexController {
 	public List<String> getCategories(){
 		return selector.getCategories();
 	}
+	
+	@RequestMapping(value={"/persons/{id}"}, method=RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public Person findByID(@PathVariable String id){
+		return selector.findByID(id);
+	}
 }

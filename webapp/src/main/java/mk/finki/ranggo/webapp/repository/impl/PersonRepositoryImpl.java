@@ -39,4 +39,12 @@ public class PersonRepositoryImpl implements PersonRepositoryAuxiliary {
 		Query query = new Query();
 		return mongoTemplate.find(query, Person.class);
 	}
+
+	public Person findByID(String id) {
+		// TODO Auto-generated method stub
+		if(id != null && !id.isEmpty()){
+			return mongoTemplate.findOne(new Query(Criteria.where("id").is(id)), Person.class);
+		}
+		return null;
+	}
 }

@@ -107,4 +107,8 @@ public class ContentsSelectorImpl implements ContentsSelector {
 		return result;
 	}
 
+	public Person findByID(String id){
+		return personRepository.findByID(id);
+	}
+	
 }

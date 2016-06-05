@@ -39,6 +39,7 @@ WPAngularStarter.controller('CategoriesController',
             $scope.search = function(){
                 if($scope.selectedItem != null && $scope.selectedItem != ""){
                     //napravi prebaruvanje po id
+                    $location.path('/people/' + $scope.selectedItem.value);
                     $scope.selectedItem = "";
                     $scope.searchText = "";
                     $scope.hiddenError = true;
