@@ -143,7 +143,7 @@ WPAngularStarter.controller('PersonController',
                     pointSize: 10,
                     vAxis: {minValue:0},
                     legend:{position: 'left', width: '200px', height: '100px'},
-                    colors:  ['#1b9e77', '#d95f02', '#7570b3'],
+                    colors:  ['#04CB78', '#d95f02', '#7570b3'],
                     tooltip: {
                         isHtml: true
                     }

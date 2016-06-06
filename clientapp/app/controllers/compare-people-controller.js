@@ -129,7 +129,7 @@ WPAngularStarter.controller('ComparePeopleController',
                     pointSize: 10,
                     vAxis: {minValue:0},
                     legend:{position: 'right', width: '200px', height: '100px'},
-                    colors:  ['#1b9e77', '#d95f02', '#7570b3'],
+                    colors:  ['#04CB78', '#fcae30', '#7570b3'],
                     tooltip: {
                         isHtml: true
                     }

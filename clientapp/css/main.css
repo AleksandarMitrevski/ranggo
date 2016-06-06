@@ -5,7 +5,7 @@
 
 #menu{
     font-family: 'Raleway';
-    background-color: white;
+    background-color: #04CB78;
 }
 
 .raleway-font{
@@ -13,11 +13,11 @@
 }
 
 #menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li > a{
-    color: black;
+    color: white;
 }
 
 #menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li > a:hover{
-    color: darkred;
+    color: grey;
 }
 
 #menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li.active{
@@ -26,7 +26,7 @@
 
 #menu > div:nth-child(1) > nav > div.navbar-collapse.collapse > ul > li.active > a{
     background-color: transparent;
-    color: darkred;
+    color: grey;
 }
 
 .item img{
@@ -43,7 +43,7 @@
 }
 
 .newsDiv{
-    border-left: 3px #F0BE62 solid;
+    border-left: 3px #fcae30 solid;
 }
 
 .vcenter {
@@ -65,12 +65,13 @@ a{
 }
 
 a:hover{
-    color: #8B9993;
+    color: #04CB78;
     text-decoration: none;
 }
 
 .tagDiv{
-    background-color: #F0BE62;
+    /*background-color: #F0BE62;*/
+    background-color:  #fcae30;
     display: inline-block;
     padding: 1%;
     margin: 1%;
@@ -82,6 +83,7 @@ a:hover{
     width: 5.6rem;
     height: 5.6rem;
     border-radius: 50%;
+    background-color: #fcae30;
 }
 
 .errorDiv{

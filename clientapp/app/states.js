@@ -55,6 +55,16 @@ WPAngularStarter.config([
       }
     });
 
+    $stateProvider.state('root.newsfeed', {
+      url: 'newsfeed',
+      views: {
+        'main@': {
+          templateUrl: "views/main/news/newsFeed.html",
+          controller: "NewsFeedController"
+        }
+      }
+    });
+
   }])
   .run([
     '$rootScope',
@@ -67,6 +77,14 @@ WPAngularStarter.config([
         state: 'root.categories',
         icon: 'glyphicon glyphicon-search',
         name: 'FIND PEOPLE'
+      },{
+        state: 'root.comparepeople',
+        icon: 'glyphicon glyphicon-sort',
+        name: 'COMPARE PEOPLE'
+      }, {
+        state: 'root.newsfeed',
+        icon: 'glyphicon glyphicon-th-list',
+        name: 'NEWS FEED'
       }];
 
     }]);
