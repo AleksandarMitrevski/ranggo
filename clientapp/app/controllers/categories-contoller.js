@@ -27,7 +27,6 @@ WPAngularStarter.controller('CategoriesController',
                 $scope.hideButton = false;
             }
 
-
             if($scope.categories.length == 0){
                 getCategories();
             }

@@ -1,1 +1,133 @@
-<h1>COMPARE PEOPLE</h1>
+<div class="container-fluid">
+    <div class="row" ng-hide="person1.id && person2.id">
+        <div class="col-xs-12 customDiv" style="padding-left: 2%; padding-right:2%;">
+            <div class="row">
+                <div class="col-xs-12 col-md-5">
+                    <md-content class="md-padding">
+                        <div class="col-xs-12">
+                            <form ng-submit="$event.preventDefault()">
+                                <md-autocomplete
+                                        ng-disabled="false"
+                                        md-no-cache="false"
+                                        md-selected-item="selectedItem"
+                                        md-search-text="searchText"
+                                        md-items="item in querySearch(searchText)"
+                                        md-item-text="item.display"
+                                        md-min-length="0"
+                                        placeholder="Choose first person">
+                                    <md-item-template>
+                                        <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.display}}</span>
+                                    </md-item-template>
+                                    <md-not-found>
+                                        No people matching "{{searchText}}" were found.
+                                    </md-not-found>
+                                </md-autocomplete>
+                            </form>
+                        </div>
+                    </md-content>
+                </div>
+                <div class="col-xs-12 col-md-2 text-center" style="margin-top:1%;">
+                    <md-button aria-label="Eat cake" style="background-color: #F0BE62" ng-click="compare()">
+                        COMPARE <i class="glyphicon glyphicon-random"></i>
+                    </md-button>
+                </div>
+                <div class="col-xs-12 col-md-5">
+                    <md-content class="md-padding">
+                        <div class="col-xs-12">
+                            <form ng-submit="$event.preventDefault()">
+                                <md-autocomplete
+                                        ng-disabled="false"
+                                        md-no-cache="false"
+                                        md-selected-item="selectedItem2"
+                                        md-search-text="searchText2"
+                                        md-items="item in querySearch2(searchText2)"
+                                        md-item-text="item.display"
+                                        md-min-length="0"
+                                        placeholder="Choose second person">
+                                    <md-item-template>
+                                        <span md-highlight-text="searchText2" md-highlight-flags="^i">{{item.display}}</span>
+                                    </md-item-template>
+                                    <md-not-found>
+                                        No people matching "{{searchText2}}" were found.
+                                    </md-not-found>
+                                </md-autocomplete>
+                            </form>
+                        </div>
+                    </md-content>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-hide="!person1.id || !person2.id">
+        <div class="col-xs-12 customDiv" style="padding-left: 2%; padding-right: 2%;">
+            <div class="row">
+                <div class="col-xs-12" style="margin-top:-2%;">
+                    <span>
+                         <md-button class="md-fab" style="width:3.6rem; height:3.6rem;line-height:0.6rem;background-color: #F0BE62" aria-label="Eat cake" ng-click="chooseNew()">
+                             <i class="glyphicon glyphicon-arrow-left"></i>
+                         </md-button>
+                         <small>Choose other people</small>
+                    </span>
+                </div>
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 innerDiv">
+                            <div class="col-xs-8">
+                                <div class="col-xs-12 text-right">
+                                    <h4 class="raleway-font">{{person1.name}}</h4>
+                                </div>
+                                <div class="col-xs-12 text-right">
+                                    <h6><a href="/#/people/{{person1.id}}">See profile <i class="glyphicon glyphicon-new-window"></i></a></h6>
+                                </div>
+                                <div class="col-xs-12 text-right">
+                                    <h6>Mentioned in <b>{{totalArticles1}}</b> articles.</h6>
+                                </div>
+                                <div class="col-xs-12 text-right">
+                                    <h6>Overall rating:  <b>{{totalRating1}}</b></h6>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="col-xs-12">
+                                    <img class="compareImg img img-responsive" src="{{person1.pictureUrl ? person1.pictureUrl : '/img/user-image.png'}}" alt="{{person1.name}}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 innerDiv">
+                            <div class="col-xs-4">
+                                <div class="col-xs-12">
+                                    <img class="compareImg img img-responsive" src="{{person2.pictureUrl ? person2.pictureUrl : '/img/user-image.png'}}" alt="{{person2.name}}"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="col-xs-12">
+                                    <h4 class="raleway-font">{{person2.name}}</h4>
+                                </div>
+                                <div class="col-xs-12">
+                                    <h6><a href="/#/people/{{person2.id}}"><i class="glyphicon glyphicon-new-window"></i> See profile</a></h6>
+                                </div>
+                                <div class="col-xs-12">
+                                    <h6>Mentioned in <b>{{totalArticles2}}</b> articles.</h6>
+                                </div>
+                                <div class="col-xs-12">
+                                    <h6>Overall rating:  <b>{{totalRating2}}</b></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-hide="!person1.id || !person2.id">
+        <div class="col-xs-12 customDiv" style="padding-left: 2%; padding-right: 2%;">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div google-chart chart="lineChart" style="height:450px; width:100%;" agc-on-select="selectHandler(selectedItem)">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

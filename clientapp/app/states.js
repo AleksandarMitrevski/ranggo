@@ -45,6 +45,16 @@ WPAngularStarter.config([
       }
     });
 
+    $stateProvider.state('root.comparepeople', {
+      url: 'compare',
+      views: {
+        'main@': {
+          templateUrl: "views/main/people/comparePeople.html",
+          controller: "ComparePeopleController"
+        }
+      }
+    });
+
   }])
   .run([
     '$rootScope',

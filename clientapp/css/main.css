@@ -117,3 +117,20 @@ a:hover{
     height: 60px;
     background-color: #f5f5f5;
 }
+
+.md-button.md-raised:not([disabled]) {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+
+.margin{
+    margin-top: 2%;
+}
+
+.noMargin{
+    margin-top:0%;
+}
+
+.compareImg{
+    height: 200px !important;
+    max-heigth: 200px !important;
+}

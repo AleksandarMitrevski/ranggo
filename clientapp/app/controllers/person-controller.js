@@ -215,7 +215,6 @@ WPAngularStarter.controller('PersonController',
                 }
                 return data1;
 
-
             }
 
             function getTitleForChart(){

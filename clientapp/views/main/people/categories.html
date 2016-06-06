@@ -54,11 +54,16 @@
                         <div class="col-xs-12">
                             <div class="col-xs-6 col-md-4 newsDiv vcenter" style="margin-bottom: 1%;" ng-repeat="person in searchResults">
                                 <!--<p>{{person.name}}</p>-->
-                                <a href="/#/people/{{person.id}}">
-                                    <div class="col-xs-6">
-                                        {{person.name}}
+                                <div class="col-xs-6">
+                                    <div class="col-xs-12">
+                                        <h5><a href="/#/people/{{person.id}}">{{person.name}}</a></h5>
                                     </div>
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
+                                        <small><a href="/#/compare?person={{person.id}}">Compare rating <i class="glyphicon glyphicon-new-window"></i></a></small>
+                                    </div>
+                                </div>
+                                <a href="/#/people/{{person.id}}">
+                                <div class="col-xs-6">
                                         <img class="searchImg" src="{{person.pictureUrl ? person.pictureUrl : '/img/user-image.png'}}"/>
                                     </div>
                                 </a>
