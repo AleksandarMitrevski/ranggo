@@ -23,6 +23,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,7 +52,6 @@ public class LibertasCrawler implements Crawler {
                     tempURL = url + "/page/" + i + "/";
                 }
                 boolean flag = crawlPages(tempURL);
-                System.out.println("Flag: " + flag);
                 if(!flag){
                     break;
                 }
@@ -102,7 +103,7 @@ public class LibertasCrawler implements Crawler {
                 }
             }
         }catch(Exception ex){
-
+        	System.out.println("ex: " + ex);
         }
         return returnValue;
     }
@@ -151,12 +152,23 @@ public class LibertasCrawler implements Crawler {
             String translatedTitle = YandexTranslator.translate(title, "mk", "en");
             
             String source = "Либертас";
+                        
+            DateFormat outputFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z");
+            DateFormat inputFormat = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+
+            String inputText = new Date().toString();
+            Date dateObj = inputFormat.parse(inputText);
+            String outputText = outputFormat.format(dateObj);
             
-            String today = HelperClass.getToday();
+            System.out.println("Text:" + text);
+            System.out.println("Title: " + title);
+            System.out.println("Date: " + date);
+            System.out.println("Output text: " + outputText);
+            
             
             //get alchemyapi analysis result
-            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
-            results.add(result);
+//            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+//            results.add(result);
             
         }catch(Exception ex){
         }

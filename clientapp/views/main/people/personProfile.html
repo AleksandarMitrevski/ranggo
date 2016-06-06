@@ -57,7 +57,7 @@
             <div class="row" ng-hide="totalRating <= -2">
                 <div class="col-xs-12 innerDiv text-center" style="margin-bottom: 2%">
                     <h4 class="raleway-font">
-                        {{person.name}}'s overall rating: <b>{{totalRating}}</b>
+                        {{person.name}}'s overall rating: <b>{{totalRating == 'NaN'? 0 : totalRating}}</b>
                     </h4>
                 </div>
             </div>

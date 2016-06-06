@@ -27,7 +27,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -153,10 +157,15 @@ public class Vesti24Crawler implements Crawler {
 
             String source = "24 вести";
 
-            String today = HelperClass.getToday();
+            DateFormat outputFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z");
+            DateFormat inputFormat = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+
+            String inputText = new Date().toString();
+            Date dateObj = inputFormat.parse(inputText);
+            String outputText = outputFormat.format(dateObj);
             
             //get alchemyapi analysis result
-            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, source, url, translatedTitle, today);
+            AlchemyAPIAnalysisResult result = AlchemyAPIWrapper.sentimentAnalysisFromTextDocument(translatedText, text, source, url, title, outputText);
             results.add(result);
             
         } catch(SocketTimeoutException e){
@@ -177,6 +186,9 @@ public class Vesti24Crawler implements Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

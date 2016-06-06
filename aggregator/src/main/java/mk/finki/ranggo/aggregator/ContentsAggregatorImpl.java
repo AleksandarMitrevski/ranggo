@@ -202,12 +202,13 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateFokus() throws ContentsAggregatorException{
-		FokusCrawler crawler = new FokusCrawler();
-		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+
+//		FokusCrawler crawler = new FokusCrawler();
+//		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
-		for(AlchemyAPIAnalysisResult analysisResults : results){
-			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
-		}
+//		for(AlchemyAPIAnalysisResult analysisResults : results){
+//			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+//		}
 	}
 	
 	public void aggregateKurir() throws ContentsAggregatorException{
@@ -220,12 +221,12 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateLibertas() throws ContentsAggregatorException{
-		LibertasCrawler crawler = new LibertasCrawler();
-		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
-		
-		for(AlchemyAPIAnalysisResult analysisResults : results){
-			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
-		}
+//		LibertasCrawler crawler = new LibertasCrawler();
+//		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
+//		
+//		for(AlchemyAPIAnalysisResult analysisResults : results){
+//			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+//		}
 	}
 	
 	public void aggregateNovaTV() throws ContentsAggregatorException{

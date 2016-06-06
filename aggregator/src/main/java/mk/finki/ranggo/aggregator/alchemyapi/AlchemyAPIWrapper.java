@@ -49,7 +49,7 @@ public class AlchemyAPIWrapper {
 
     public static String apiKey = "93d373e6a3f668c2b385057b29e3072e77ad2046";
 
-    public static AlchemyAPIAnalysisResult sentimentAnalysisFromTextDocument(String text, String source, String url, String title, String timestamp) throws XPathExpressionException, IOException, SAXException, ParserConfigurationException{
+    public static AlchemyAPIAnalysisResult sentimentAnalysisFromTextDocument(String text, String originalText, String source, String url, String title, String timestamp) throws XPathExpressionException, IOException, SAXException, ParserConfigurationException{
         AlchemyAPI alchemyAPI = AlchemyAPI.GetInstanceFromString(apiKey);
         AlchemyAPI_CombinedParams alchemyapi_params = new AlchemyAPI_CombinedParams();
 		alchemyapi_params.setLinkedData(true);
@@ -243,7 +243,7 @@ public class AlchemyAPIWrapper {
 			taxonomies.add(taxonomy);
 		}
 	
-		AlchemyAPIAnalysisResult result = new AlchemyAPIAnalysisResult(null, null, text, null, null, persons, personEntities, concepts, keywords, taxonomies);
+		AlchemyAPIAnalysisResult result = new AlchemyAPIAnalysisResult(null, null, originalText, null, null, persons, personEntities, concepts, keywords, taxonomies);
 		result.setType(source);
 		result.setUrl(url);
 		result.setTitle(title);

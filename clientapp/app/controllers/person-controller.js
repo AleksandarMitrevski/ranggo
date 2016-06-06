@@ -199,7 +199,7 @@ WPAngularStarter.controller('PersonController',
                 for(var i=0;i<arr.length;i++){
                     tempTotal += arr[i].totalNumber;
                     tempRating += arr[i].totalRating;
-                    var total = arr[i].totalRating/arr[i].totalNumber;
+                    var total = (arr[i].totalRating/arr[i].totalNumber).toFixed(3);
                     if(isNaN(total)){
                         total = 0.0;
                     }
