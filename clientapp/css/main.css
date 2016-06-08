@@ -101,9 +101,20 @@ a:hover{
     color: black;
 }
 
+.myRow {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
+    flex-wrap: wrap;
+}
+.myRow > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
 
 .no-class-button:hover{
-    color: white;
+    color: darkgrey;
 }
 
 .searchImg{
@@ -135,4 +146,19 @@ a:hover{
 .compareImg{
     height: 200px !important;
     max-heigth: 200px !important;
+}
+
+md-checkbox {
+    margin: 8px;
+    cursor: pointer;
+    padding-left: 18px;
+    padding-right: 0;
+    line-height: 26px;
+    min-width: 18px;
+    min-height: 18px;
+}
+
+footer{
+    background-color:#04CB78;
+    margin-top:2%;
 }

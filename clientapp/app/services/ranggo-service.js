@@ -38,6 +38,14 @@ WPAngularStarter.factory('RanggoService', [
                 url: root + '/ratings/:id',
                 method: 'GET',
                 isArray: true
+            }, getSources:{
+                url: root + '/sources',
+                method: 'GET',
+                isArray: true
+            }, getNewsByDateAndPreferences:{
+                url: root + '/contents/:date/:preferences',
+                method: 'GET',
+                isArray: true
             }
         });
     }

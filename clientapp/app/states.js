@@ -65,6 +65,16 @@ WPAngularStarter.config([
       }
     });
 
+    $stateProvider.state('root.newsarchive', {
+      url: 'newsarchive/:date',
+      views: {
+        'main@': {
+          templateUrl: "views/main/news/newsArchive.html",
+          controller: "NewsArchiveController"
+        }
+      }
+    });
+
   }])
   .run([
     '$rootScope',

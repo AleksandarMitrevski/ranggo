@@ -28,7 +28,7 @@ public class Aggregator
 		ContentsAggregator aggregator = new ContentsAggregatorImpl(alchemyapi_key, personRepository, contentRepository);
 		
 		//populates the data store with the test dataset
-		//Aggregator.test(aggregator);
+		Aggregator.test(aggregator);
 		
 		
 		Aggregator.update(null, aggregator);
@@ -87,66 +87,66 @@ public class Aggregator
 //			}catch(ContentsAggregatorException exception){
 //				//log this
 //			}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateDnevnik();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateKurir();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateLibertas();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateNovaTV();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateRepublika();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateTelma();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateUtrinskiVesnik();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateVecher();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateVest();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
-//	    	
-//	    	try{
-//	    		aggregator.aggregateVesti24();
-//	    	}catch(ContentsAggregatorException exception){
-//	    		
-//	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateDnevnik();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateKurir();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateLibertas();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateNovaTV();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateRepublika();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateTelma();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateUtrinskiVesnik();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateVecher();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateVest();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	
+	    	try{
+	    		aggregator.aggregateVesti24();
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
 	    }
 	}
 	

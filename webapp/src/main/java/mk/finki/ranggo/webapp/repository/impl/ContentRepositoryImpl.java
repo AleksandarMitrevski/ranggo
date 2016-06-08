@@ -43,4 +43,5 @@ public class ContentRepositoryImpl implements ContentRepositoryAuxiliary {
 		
 		return mongoTemplate.find(query, Content.class);
 	}
+	
 }

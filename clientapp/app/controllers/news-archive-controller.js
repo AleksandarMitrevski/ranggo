@@ -1,10 +1,14 @@
+/**
+ * Created by Simona on 6/7/2016.
+ */
 
 /**
  * Created by Simona on 6/1/2016.
  */
-WPAngularStarter.controller('NewsFeedController',
-    ['$scope', 'RanggoService', '$location', '$http', '$cookies',
-        function($scope, RanggoService, $location, $http, $cookies) {
+WPAngularStarter.controller('NewsArchiveController',
+    ['$scope', 'RanggoService', '$location', '$http', '$cookies', '$stateParams',
+        function($scope, RanggoService, $location, $http, $cookies, $stateParams) {
+            $scope.thisDate = $stateParams.date;
 
             $scope.macedonianSources = [];
             $scope.englishSources = [];
@@ -24,7 +28,7 @@ WPAngularStarter.controller('NewsFeedController',
             }
 
             $scope.switchDate = function(){
-                if(getDateFormat($scope.myDate) != getDateFormat(new Date())){
+                if(getDateFormat($scope.myDate) != $scope.thisDate){
                     $location.path("/newsarchive/" + getDateFormat($scope.myDate));
                 }
             }
@@ -48,20 +52,7 @@ WPAngularStarter.controller('NewsFeedController',
             }
 
             function getNews(){
-                var date = new Date();
-                var day = date.getDate();
-                var month = date.getMonth()+1;
-                var year = date.getFullYear();
-
-                if(day < 10){
-                    day = "0" + day;
-                }
-
-                if(month < 10){
-                    month = "0" + month;
-                }
-
-                var result = day + "." + month + "." + year;
+                var result = $scope.thisDate;
                 var cookies = [];
                 if($cookies.getObject("preferences")){
                     var tmp = $cookies.getObject("preferences");
@@ -215,7 +206,6 @@ WPAngularStarter.controller('NewsFeedController',
                     $scope.englishSources[i].checked = $scope.selectedEnglish || $scope.englishSources[i].checked;
                 }
             }
-
 
         }
     ]);

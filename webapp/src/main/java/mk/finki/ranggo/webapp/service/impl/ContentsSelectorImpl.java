@@ -1,6 +1,9 @@
 package mk.finki.ranggo.webapp.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +49,42 @@ public class ContentsSelectorImpl implements ContentsSelector {
 		return contents;
 	}
 
+	public List<Content> getContentsByDateAndDate(String date, List<String> type){
+		List<Content> contents = getAllContents();
+		List<Content> result = new ArrayList<Content>();
+		
+        System.out.println("type:" + type);
+		System.out.println("type.length: " + type.size());
+        
+		for(Content content : contents){
+			try{
+				DateFormat outputFormat = new SimpleDateFormat("dd.MM.yyyy");
+		        DateFormat inputFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z");
+
+		        Date dateObj = inputFormat.parse(content.getTimestamp());
+		        String outputText = outputFormat.format(dateObj);
+		        
+		        if(outputText.equals(date)){
+		        	if(type.size() == 0){
+		        		result.add(content);
+		        	} else {
+			        	for(String str : type){
+			        		if(str.equals(content.getType())){
+			        			result.add(content);
+			        			break;
+			        		}
+			        	}
+		        	}
+		        }
+		        
+			} catch(Exception e){
+				
+			}
+		}
+		
+		return result;
+	}
+	
 	public List<Content> getRatingsForPerson(String id) {
 		return contentRepository.getContentsForPerson(id);
 	}

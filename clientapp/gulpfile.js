@@ -80,6 +80,7 @@ var JS_LIB = [
     'bower_components/angular-aria/angular-aria.js',
     'bower_components/angular-material/angular-material.js',
     "bower_components/angular-google-chart/ng-google-chart.js",
+    'bower_components/angular-cookies/angular-cookies.js'
 ];
 
 var JS_APP = [

@@ -23,4 +23,6 @@ public interface ContentsSelector {
 	
 	public Person findByID(String id);
 	
+	public List<Content> getContentsByDateAndDate(String date, List<String> preferences);
+	
 }
