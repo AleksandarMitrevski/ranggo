@@ -25,4 +25,8 @@ public interface ContentsSelector {
 	
 	public List<Content> getContentsByDateAndDate(String date, List<String> preferences);
 	
+	public Content getContentByID(String id);
+	
+	public List<Content> getSimilarContents(String id);
+	
 }

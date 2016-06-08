@@ -75,6 +75,16 @@ WPAngularStarter.config([
       }
     });
 
+    $stateProvider.state('root.news', {
+      url: 'news/:id',
+      views: {
+        'main@': {
+          templateUrl: "views/main/news/news.html",
+          controller: "NewsController"
+        }
+      }
+    });
+
   }])
   .run([
     '$rootScope',

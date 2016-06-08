@@ -18,7 +18,7 @@ import mk.finki.ranggo.webapp.model.Person;
 import mk.finki.ranggo.webapp.model.Source;
 import mk.finki.ranggo.webapp.service.ContentsSelector;
 
-@CrossOrigin(origins = "http://localhost:8000")
+@CrossOrigin(origins = "*")
 @Controller
 public class IndexController {
 	
@@ -105,6 +105,19 @@ public class IndexController {
 	@ResponseBody
 	public List<Content> getContentsByDateAndDate(@PathVariable String date, @PathVariable List<String> preferences){
 		return selector.getContentsByDateAndDate(date, preferences);
+	}
+	
+	@RequestMapping(value={"/content/{id}"}, method=RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public Content getContentByID(@PathVariable String id){
+		return selector.getContentByID(id);
+	}
+	
+	
+	@RequestMapping(value={"/content/{id}/similarContents"}, method=RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public List<Content> getSimilarContents(@PathVariable String id){
+		return selector.getSimilarContents(id);
 	}
 	
 }

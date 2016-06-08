@@ -44,4 +44,13 @@ public class ContentRepositoryImpl implements ContentRepositoryAuxiliary {
 		return mongoTemplate.find(query, Content.class);
 	}
 	
+	public Content getContentByID(String id){
+		if(id != null){
+			return mongoTemplate.findOne(new Query(Criteria.where("id").is(id)), Content.class);
+		}
+		return null;
+	}
+	
+
+	
 }

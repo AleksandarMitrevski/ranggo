@@ -46,6 +46,14 @@ WPAngularStarter.factory('RanggoService', [
                 url: root + '/contents/:date/:preferences',
                 method: 'GET',
                 isArray: true
+            }, getContentByID:{
+                url: root + '/content/:id',
+                method: 'GET',
+                isArray: false
+            }, getSimilarContents:{
+                url: root + '/content/:id/similarContents',
+                method: 'GET',
+                isArray: true
             }
         });
     }

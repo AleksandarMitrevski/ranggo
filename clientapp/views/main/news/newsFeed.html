@@ -73,7 +73,7 @@
                     <h2 class="raleway-font"><b>TODAY'S NEWS</b></h2>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-hide="news.length == 0">
                 <div class="col-xs-12" ng-repeat="source in newsGroupedBySources">
                     <div class="row" style="margin-top:1%;margin-bottom:1%;">
                         <div class="col-xs-12 innerDiv">
@@ -82,7 +82,7 @@
                     </div>
                     <div class="row myRow">
                         <div class="col-xs-12 col-md-3 newsDiv innerDiv" style="margin-bottom:1%" ng-repeat="story in source.contents">
-                            <a href="">
+                            <a href="/#/news/{{story.id}}">
                                 <h4>{{story.title}}</h4>
                                 <small>{{story.timestamp}}</small>
                                 <small>...read more  <i class="glyphicon glyphicon-triangle-right"></i></small>
@@ -91,7 +91,12 @@
                     </div>
                 </div>
             </div>
-
+            <div class="row" ng-hide="news.length > 0">
+                <div class="col-xs-12 errorDiv">
+                    <h2>ERROR</h2>
+                    <h4>We're sorry, but we haven't found any news for the day you have selected. Please adjust your search parameters and try again.</h4>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -11,9 +11,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mk.finki.ranggo.webapp.model.Concept;
 import mk.finki.ranggo.webapp.model.Content;
 import mk.finki.ranggo.webapp.model.Person;
 import mk.finki.ranggo.webapp.model.PersonEntity;
+import mk.finki.ranggo.webapp.model.Taxonomy;
 import mk.finki.ranggo.webapp.repository.ContentRepository;
 import mk.finki.ranggo.webapp.repository.PersonRepository;
 import mk.finki.ranggo.webapp.service.ContentsSelector;
@@ -148,6 +150,67 @@ public class ContentsSelectorImpl implements ContentsSelector {
 
 	public Person findByID(String id){
 		return personRepository.findByID(id);
+	}
+	
+	public Content getContentByID(String id){
+		return contentRepository.getContentByID(id);
+	}
+	
+	public List<Content> getSimilarContents(String id){
+		Content content = getContentByID(id);
+		List<Content> contents = getAllContents();
+		
+		List<Content> result = new ArrayList<Content>();
+		
+		List<String> people = new ArrayList<String>();
+		for(PersonEntity entity : content.getPersonEntities()){
+			if(entity.getPerson()!=null){
+				if(!people.contains(entity.getPerson().getId())){
+					people.add(entity.getPerson().getId());
+				}
+			}
+		}
+		
+	
+		List<String> concepts = new ArrayList<String>();
+		for(Concept concept : content.getConcepts()){
+			if(!concepts.contains(concept.getText())){
+				concepts.add(concept.getText());
+			}
+		}
+		
+		for(Content c : contents){
+			if(!c.getId().equals(content.getId()) && !c.getType().equals("STATIC")){
+				int countPeople = 0;
+				int countConcepts = 0;
+				
+				for(PersonEntity entity : c.getPersonEntities()){
+					if(entity.getPerson()!=null){
+						for(String person : people){
+							if(person.equals(entity.getPerson().getId())){
+								countPeople++;
+								break;
+							}
+						}
+					}
+				}
+				
+				for(Concept concept : c.getConcepts()){
+					for(String con : concepts){
+						if(con.equals(concept.getText())){
+							countConcepts++;
+							break;
+						}
+					}
+				}
+				
+				if(countPeople > people.size()*(1/3.0) || countConcepts > concepts.size()*(1/3.0)){
+					result.add(c);
+				}
+			}
+		}	
+		
+		return result;
 	}
 	
 }

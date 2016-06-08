@@ -11,4 +11,6 @@ public interface ContentRepositoryAuxiliary {
 	List<Content> getContentsForPerson(String id);
 	
 	List<Content> getNewestContents();
+	
+	Content getContentByID(String id);
 }

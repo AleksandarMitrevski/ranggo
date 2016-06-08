@@ -1,0 +1,135 @@
+<div class="container lato-font">
+    <div class="row">
+        <div class="col-xs-12" ng-hide="error">
+            <ul class="nav navbar-nav customNav">
+                <li>
+                    <a href="" ng-click="gotoAnchor('text')">TEXT</a>
+                </li>
+                <li>
+                    <a href="" ng-click="gotoAnchor('concepts')">CONCEPTS</a>
+                </li>
+                <li>
+                    <a href="" ng-click="gotoAnchor('people')">PEOPLE</a>
+                </li>
+                <li>
+                    <a href="" ng-click="gotoAnchor('similar')">SIMILAR NEWS</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row" ng-hide="error">
+        <div class="col-xs-12 customDiv otherCustomDiv" id="text" class="anchor">
+            <div class="row">
+                <div class="col-xs-12 innerDiv text-center" style="margin-bottom:2%;">
+                    <h4 class="raleway-font"><b>TEXT</b></h4>
+                </div>
+                <div class="col-xs-12 col-md-9">
+                    <div class="row">
+                        <div class="col-xs-12 innerDiv">
+                            <h4 class="raleway-font"><b>{{news.title}}</b></h4>
+                        </div>
+                        <div class="col-xs-12 innerDiv">
+                            <p>{{news.body}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-3">
+                    <div class="row" style="padding-left:3%;">
+                        <div class="col-xs-12 innerDiv">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <h4 class="raleway-font"><b>Basic information</b></h4>
+                                </div>
+                                <div class="col-xs-12">
+                                    <h5>Published on: <b>{{news.timestamp}}</b></h5>
+                                </div>
+                                <div class="col-xs-12">
+                                    <h5>Source: <b>{{news.type}}</b></h5>
+                                </div>
+                                <div class="col-xs-12">
+                                    <h5><a href="{{news.sourceUrl}}">Go to original source<i class="glyphicon glyphicon-share-alt"></i></a></h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 innerDiv" style="margin-top:2%;" ng-hide="taxonomies.length == 0">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <h4 class="raleway-font"><b>Taxonomy</b></h4>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="tagDiv" ng-repeat="taxonomy in taxonomies">
+                                        {{taxonomy}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 customDiv otherCustomDiv" id="concepts" class="anchor">
+            <div class="row">
+                <div class="col-xs-12 innerDiv text-center" style="margin-bottom:2%;">
+                    <h4 class="raleway-font"><b>CONCEPTS</b></h4>
+                </div>
+                <div class="col-xs-12 innerDiv">
+                    <div google-chart chart="conceptChart" style="height:450px; width:100%;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 customDiv otherCustomDiv" id="people" class="anchor">
+            <div class="row">
+                <div class="col-xs-12 innerDiv text-center" style="margin-bottom: 2%;">
+                    <h4 class="raleway-font"><b>PEOPLE</b></h4>
+                </div>
+                <div class="col-xs-12 innerDiv" ng-hide="hidePeople">
+                    <div class="col-xs-12 text-center">
+                        <small>Tip: Click on a bubble representing a person on the chart to see the profile of that person.</small>
+                    </div>
+                    <div class="col-xs-12">
+                        <div google-chart chart="peopleChart" style="height:450px; width:100%;" agc-on-select="selectHandler(selectedItem)">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 errorDiv" ng-hide="!hidePeople">
+                    <h2>NO PEOPLE FOUND</h2>
+                    <h4>There are no people in the text, or they are not relevant to the story. Please check out our other cool statistics. :)</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 customDiv otherCustomDiv" id="similar" class="anchor" >
+            <div class="row">
+                <div class="col-xs-12 innerDiv text-center" style="margin-bottom:2%;">
+                    <h4 class="raleway-font"><b>SIMILAR NEWS</b></h4>
+                </div>
+                <div class="col-xs-12">
+                    <div class="row myRow"  ng-hide="similarNews.length == 0">
+                            <div class="col-xs-12 col-md-3 newsDiv innerDiv" style="margin-bottom:1%;" ng-repeat="similar in similarNews">
+                                <a href="/#/news/{{similar.id}}">
+                                    <h4>{{similar.title}}</h4>
+                                    <small>{{similar.timestamp}}</small>
+                                    <small>...read more  <i class="glyphicon glyphicon-triangle-right"></i></small>
+                                </a>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 errorDiv" ng-hide="similarNews.length > 0">
+                    <h4>No similar news were found.</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-hide="!error">
+        <div class="col-xs-12 errorDiv">
+            <h2>404: NOT FOUND</h2>
+            <h4>You have searched for a resource that doesn't exist. Please adjust your search parameters and try again.</h4>
+        </div>
+    </div>
+</div>

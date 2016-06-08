@@ -42,6 +42,12 @@
     margin-right: 2%;
 }
 
+.otherCustomDiv{
+    padding-left: 4%;
+    padding-right: 4%;
+    margin-top: 2%;
+}
+
 .newsDiv{
     border-left: 3px #fcae30 solid;
 }
@@ -161,4 +167,21 @@ md-checkbox {
 footer{
     background-color:#04CB78;
     margin-top:2%;
+}
+
+.customNav{
+    width: 100%;
+}
+
+.customNav >  li{
+    background-color: rgba(255,64,129,0.87);
+    margin-right: 1%;
+}
+
+.customNav > li > a{
+    color: white;
+}
+
+.customNav > li > a:hover{
+    color: darkgrey;
 }

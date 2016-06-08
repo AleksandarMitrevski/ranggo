@@ -70,6 +70,15 @@ WPAngularStarter.controller('NewsFeedController',
                     }
                 }
 
+                if(cookies.length == 0){
+                    for(var i=0;i<$scope.macedonianSources.length;i++){
+                        cookies.push($scope.macedonianSources[i].name);
+                    }
+                    for(var i=0;i<$scope.englishSources.length;i++){
+                        cookies.push($scope.englishSources[i].name);
+                    }
+                }
+
                 RanggoService.getNewsByDateAndPreferences({date: result, preferences: cookies}).$promise.then(function(data){
                     $scope.news = data;
                     $scope.newsGroupedBySources = [];
