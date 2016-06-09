@@ -40,12 +40,17 @@ import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.DomSerializer;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.*;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 //import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+
 
 import com.alchemyapi.api.AlchemyAPI;
 import com.alchemyapi.api.AlchemyAPI_CombinedParams;
@@ -62,6 +67,10 @@ import mk.finki.ranggo.aggregator.crawlers.impl.UtrinskiVesnikCrawler;
 import mk.finki.ranggo.aggregator.crawlers.impl.VecherCrawler;
 import mk.finki.ranggo.aggregator.crawlers.impl.VestCrawler;
 import mk.finki.ranggo.aggregator.crawlers.impl.Vesti24Crawler;
+import mk.finki.ranggo.aggregator.helper.NewYorkTimes.NYTimesResult;
+import mk.finki.ranggo.aggregator.helper.NewYorkTimes.NYTimesWebUrl;
+import mk.finki.ranggo.aggregator.helper.TheGuardian.TheGuardianResult;
+import mk.finki.ranggo.aggregator.helper.TheGuardian.TheGuardianWebUrl;
 import mk.finki.ranggo.aggregator.model.Concept;
 import mk.finki.ranggo.aggregator.model.Content;
 import mk.finki.ranggo.aggregator.model.Keyword;
@@ -293,6 +302,68 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		}
 	}
 	
+public void aggregateNYTimes(Date date) throws ContentsAggregatorException{
+		
+		final String api_key="b4d2896590ef4a8aaf583d26cd97a6df";
+		final String api_url="http://api.nytimes.com/svc/search/v2/articlesearch.json?";
+			
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYYMMdd");
+		String stringDate=simpleDateFormat.format(date);
+		
+		 String URL=api_url+"begin_date="+stringDate+"&end_date="+stringDate+"&api-key="+api_key+"&fl=web_url,lead_paragraph,pub_date";
+		 
+		 try{
+			 
+		 RestTemplate restTemplate=new RestTemplate();
+		
+	     MappingJacksonHttpMessageConverter jsonConverter = new MappingJacksonHttpMessageConverter();
+	     //jsonConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "json", MappingJackson2HttpMessageConverter.DEFAULT_CHARSET)));
+	     restTemplate.getMessageConverters().add(jsonConverter);
+	     NYTimesResult response=restTemplate.getForObject(URL,NYTimesResult.class);
+	     
+	     ArrayList<NYTimesWebUrl> list=response.getResponse().getDocs();
+	     
+	     for(NYTimesWebUrl webUrl: list){
+	    	this.processNYTimes(webUrl.getWeb_url(), webUrl.getTitle(), webUrl.getPub_date());
+	     }
+	     
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+		 
+	     
+		 
+	}
+	
+	public void aggregateTheGuardian(Date date)
+			throws ContentsAggregatorException {
+		  
+		final String api_key="c5b09c10-090a-4f9e-b87f-37df6fb7a079";
+		final String api_url="http://content.guardianapis.com/search?";
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
+		String stringDate=simpleDateFormat.format(date);
+		
+		String URL=api_url+"from-date="+stringDate+"&to-date="+stringDate+"&api-key="+api_key;
+		
+		try{
+			 RestTemplate restTemplate=new RestTemplate();
+			 MappingJacksonHttpMessageConverter jsonConverter = new MappingJacksonHttpMessageConverter();
+			 //jsonConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "json", MappingJackson2HttpMessageConverter.DEFAULT_CHARSET)));
+			 restTemplate.getMessageConverters().add(jsonConverter);
+			 TheGuardianResult response = restTemplate.getForObject(URL,TheGuardianResult.class);
+			 ArrayList<TheGuardianWebUrl> results=response.getResponse().getUrls();
+		
+			for(TheGuardianWebUrl webUrl:results){
+				 this.processTheGuardian(webUrl.getWebUrl(), webUrl.getWebTitle(), webUrl.getWebPublicationDate());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
 	public void aggregateTest() throws ContentsAggregatorException {
 		final int CONTENT_COUNT = 20;
 		
@@ -454,6 +525,32 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		}
 	}
 	
+	private void processNYTimes(String URL,String title,String timestamp) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException{
+		if(contentRepository.findBySourceUrl(URL)==null){
+			
+			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
+			analysisResults.setType("NYTimes");
+			analysisResults.setUrl(URL);
+			analysisResults.setTitle(title);
+			analysisResults.setTimestamp(timestamp);
+			
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
+	 
+	private void processTheGuardian(String URL, String title, String timestamp) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException{
+		
+	if(contentRepository.findBySourceUrl(URL)==null){
+			
+			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
+			analysisResults.setType("TheGuardian");
+			analysisResults.setUrl(URL);
+			analysisResults.setTitle(title);
+			analysisResults.setTimestamp(timestamp);
+			
+			ContentsAggregatorImpl.persistData(personRepository, contentRepository, analysisResults);
+		}
+	}
 	private void processStatic(String URL, String title, String timestamp) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
 		//do not analyze it if it exists in the data store (check by url)
 	

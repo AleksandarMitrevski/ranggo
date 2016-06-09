@@ -32,4 +32,8 @@ public interface ContentsAggregator {
 	
 	public void aggregateTest() throws ContentsAggregatorException;
 	
+    public void aggregateNYTimes(Date date) throws ContentsAggregatorException;
+	
+	public void aggregateTheGuardian(Date date) throws ContentsAggregatorException;
+	
 }

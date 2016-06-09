@@ -132,6 +132,16 @@ public class Aggregator
 	    	}catch(ContentsAggregatorException exception){
 	    		
 	    	}
+	    	try{
+	    		aggregator.aggregateNYTimes(dateObj);
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
+	    	try{
+	    		aggregator.aggregateTheGuardian(dateObj);
+	    	}catch(ContentsAggregatorException exception){
+	    		
+	    	}
 	    }
 	}
 	
