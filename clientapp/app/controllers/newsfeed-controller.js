@@ -19,10 +19,6 @@ WPAngularStarter.controller('NewsFeedController',
             $scope.news = [];
             $scope.newsGroupedBySources = [];
 
-            if($scope.news.length == 0){
-                getNews();
-            }
-
             $scope.switchDate = function(){
                 if(getDateFormat($scope.myDate) != getDateFormat(new Date())){
                     $location.path("/newsarchive/" + getDateFormat($scope.myDate));
@@ -77,6 +73,7 @@ WPAngularStarter.controller('NewsFeedController',
                     for(var i=0;i<$scope.englishSources.length;i++){
                         cookies.push($scope.englishSources[i].name);
                     }
+                    $cookies.putObject("preferences", cookies);
                 }
 
                 RanggoService.getNewsByDateAndPreferences({date: result, preferences: cookies}).$promise.then(function(data){
@@ -158,6 +155,7 @@ WPAngularStarter.controller('NewsFeedController',
                     if(countEnglish == maxEnglish){
                         $scope.selectedEnglish = true;
                     }
+                    getNews();
                 });
             }
 

@@ -85,6 +85,16 @@ WPAngularStarter.config([
       }
     });
 
+    $stateProvider.state('root.advancedSearch', {
+      url: 'advancedsearch',
+      views: {
+        'main@': {
+          templateUrl: "views/main/news/advancedSearch.html",
+          controller: "AdvancedSearchController"
+        }
+      }
+    });
+
   }])
   .run([
     '$rootScope',
@@ -105,6 +115,10 @@ WPAngularStarter.config([
         state: 'root.newsfeed',
         icon: 'glyphicon glyphicon-th-list',
         name: 'NEWS FEED'
+      },{
+        state: 'root.advancedSearch',
+        icon: 'glyphicon glyphicon-search',
+        name: 'ADVANCED SEARCH'
       }];
 
     }]);

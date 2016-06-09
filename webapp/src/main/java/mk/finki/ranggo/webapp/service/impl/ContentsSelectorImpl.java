@@ -15,6 +15,7 @@ import mk.finki.ranggo.webapp.model.Concept;
 import mk.finki.ranggo.webapp.model.Content;
 import mk.finki.ranggo.webapp.model.Person;
 import mk.finki.ranggo.webapp.model.PersonEntity;
+import mk.finki.ranggo.webapp.model.SearchObject;
 import mk.finki.ranggo.webapp.model.Taxonomy;
 import mk.finki.ranggo.webapp.repository.ContentRepository;
 import mk.finki.ranggo.webapp.repository.PersonRepository;
@@ -212,5 +213,159 @@ public class ContentsSelectorImpl implements ContentsSelector {
 		
 		return result;
 	}
+	
+	public List<Content> getFilteredContents(SearchObject searchObject){
+		List<Content> contents = getAllContents();
+		List<Content> result = new ArrayList<Content>();
+		
+		if(!searchObject.getDateFrom().equals("") && !searchObject.getDateTo().equals("")){
+			if(compareDates(searchObject.getDateFrom(), searchObject.getDateTo())>0){
+				String date = searchObject.getDateFrom();
+				searchObject.setDateFrom(searchObject.getDateTo());
+				searchObject.setDateTo(date);
+			}
+		}
+		
+	
+		for(Content content : contents){
+			try{
+				DateFormat outputFormat = new SimpleDateFormat("dd.MM.yyyy");
+		        DateFormat inputFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z");
+	
+		        Date dateObj = inputFormat.parse(content.getTimestamp());
+		        String outputText = outputFormat.format(dateObj);
+		        
+		        if(!searchObject.getDateFrom().equals("")){
+		        	if(compareDates(outputText, searchObject.getDateFrom())<0){
+		        		continue;
+		        	}
+		        }
+		        
+		        if(!searchObject.getDateTo().equals("")){
+		        	if(compareDates(outputText, searchObject.getDateTo())>0){
+		        		continue;
+		        	} 
+		        } 
+		        
+		        
+		        if(!searchObject.getTitle().equals("")){
+			        if(!compareTitles(content.getTitle(), searchObject.getTitle())){
+			        	continue;
+			        }
+		        }
+		        
+		        if(searchObject.getKeywords().size() > 0){
+		        	if(!compareKeywords(content.getConcepts(), searchObject.getKeywords())){
+			        	continue;
+			        }
+		        }
+		        
+		        if(searchObject.getPeople().size() > 0){
+		        	if(!comparePeople(content.getPersonEntities(), searchObject.getPeople())){
+			        	continue;
+			        }
+		        }
+		        
+		
+		        result.add(content);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
+	public boolean comparePeople(List<PersonEntity> personEntities, List<String> people){
+		int count = 0;
+		
+		for(String person : people){
+			for(PersonEntity entity : personEntities){
+				if(entity.getPerson()!=null && entity.getPerson().getId()!=null){
+					if(person.equals(entity.getPerson().getId())){
+						count++;
+						break;
+					}
+				}
+			}
+		}
+		
+		return count == people.size();
+	}
+	
+	public boolean compareKeywords(List<Concept> originalConcepts, List<String> concepts){
+		int count = 0;
+		
+		for(String con : concepts){
+			for(Concept concept : originalConcepts){
+				if(getLetters(concept.getText()).toLowerCase().equals(getLetters(con).toLowerCase())){
+					count++;
+					break;
+				}
+			}
+		}
+		
+	    return count == concepts.size();
+	}
+	
+	public boolean compareTitles(String originalTitle, String toCompareWith){
+		if(toCompareWith.equals("")){
+			return true;
+		}
+		
+		String[] originalParts = originalTitle.split(" ");
+		String[] parts = toCompareWith.split(" ");
+		
+		int count = 0;
+		
+		for(int i=0;i<parts.length;i++){
+			for(int j=0;j<originalParts.length;j++){
+				if(getLetters(parts[i]).toLowerCase().equals(getLetters(originalParts[j]).toLowerCase())){
+					count++;
+					break;
+				}
+			}
+		}
+		
+		return count == parts.length;
+	}
+	
+	public int compareDates(String date1, String date2){
+		String[] first = date1.split("\\.");
+		String[] second = date2.split("\\.");
+		 
+		int firstDay = Integer.parseInt(first[0]);
+		int firstMonth = Integer.parseInt(first[1]);
+		int firstYear = Integer.parseInt(first[2]);
+		
+		int secondDay = Integer.parseInt(second[0]);
+		int secondMonth = Integer.parseInt(second[1]);
+		int secondYear = Integer.parseInt(second[2]);
+		
+		if(firstYear < secondYear){
+			return -1;
+		} else if(firstYear > secondYear){
+			return 1;
+		} else {
+			if(firstMonth < secondMonth){
+				return -1;
+			} else if(firstMonth > secondMonth){
+				return 1;
+			} else {
+				if(firstDay < secondDay){
+					return -1;
+				} else if(firstDay > secondDay){
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+	}
+	
+	public String getLetters(String word){
+		return word.replaceAll("\\P{L}+", "");
+	}
+
 	
 }

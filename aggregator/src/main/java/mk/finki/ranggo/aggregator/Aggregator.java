@@ -59,79 +59,80 @@ public class Aggregator
 		}
 		
 	    if(dateObj != null){
-	    	/* may want to uncomment in final version
-			try{
-				aggregator.aggregateGoogleNewsRSSFeed(dateObj);
-			}catch(ContentsAggregatorException exception){
-				//log this
-			}
-			
-			try{
-				aggregator.aggregateHuffingtonPost();
-			}catch(ContentsAggregatorException exception){
-				//log this
-			}
-	    	*/
 	    	
-	    	try{
-	    		aggregator.aggregateDnevnik();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
+//			try{
+//				aggregator.aggregateGoogleNewsRSSFeed(dateObj);
+//			}catch(ContentsAggregatorException exception){
+//				//log this
+//			}
+//			
+//			try{
+//				aggregator.aggregateHuffingtonPost();
+//			}catch(ContentsAggregatorException exception){
+//				//log this
+//			}
+//	    	
+//	    	
+//	    	try{
+//	    		aggregator.aggregateDnevnik();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateKurir();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateLibertas();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateNovaTV();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateRepublika();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateTelma();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateUtrinskiVesnik();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateVecher();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateVest();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
+//	    	
+//	    	try{
+//	    		aggregator.aggregateVesti24();
+//	    	}catch(ContentsAggregatorException exception){
+//	    		
+//	    	}
 	    	
-	    	try{
-	    		aggregator.aggregateKurir();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateLibertas();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateNovaTV();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateRepublika();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateTelma();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateUtrinskiVesnik();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateVecher();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateVest();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
-	    	
-	    	try{
-	    		aggregator.aggregateVesti24();
-	    	}catch(ContentsAggregatorException exception){
-	    		
-	    	}
 	    	try{
 	    		aggregator.aggregateNYTimes(dateObj);
 	    	}catch(ContentsAggregatorException exception){

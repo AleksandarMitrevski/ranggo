@@ -330,9 +330,6 @@ public void aggregateNYTimes(Date date) throws ContentsAggregatorException{
 		 }catch(Exception e){
 			 e.printStackTrace();
 		 }
-		 
-	     
-		 
 	}
 	
 	public void aggregateTheGuardian(Date date)
@@ -529,7 +526,7 @@ public void aggregateNYTimes(Date date) throws ContentsAggregatorException{
 		if(contentRepository.findBySourceUrl(URL)==null){
 			
 			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
-			analysisResults.setType("NYTimes");
+			analysisResults.setType("NY Times");
 			analysisResults.setUrl(URL);
 			analysisResults.setTitle(title);
 			analysisResults.setTimestamp(timestamp);
@@ -543,7 +540,7 @@ public void aggregateNYTimes(Date date) throws ContentsAggregatorException{
 	if(contentRepository.findBySourceUrl(URL)==null){
 			
 			AlchemyAPIAnalysisResult analysisResults = ContentsAggregatorImpl.analyzeContent(alchemyapi, alchemyapi_params, URL);
-			analysisResults.setType("TheGuardian");
+			analysisResults.setType("The Guardian");
 			analysisResults.setUrl(URL);
 			analysisResults.setTitle(title);
 			analysisResults.setTimestamp(timestamp);

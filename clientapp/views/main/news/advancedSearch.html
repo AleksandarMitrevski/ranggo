@@ -1,0 +1,139 @@
+<div class="container-fluid lato-font">
+    <div class="row">
+        <div class="col-xs-12 col-md-6 customDiv otherCustomDiv">
+            <div class="row">
+
+                <div class="col-xs-12 innerDiv">
+                    <div class="col-xs-12 col-md-2">
+                        <h4>Choose date:</h4>
+                    </div>
+                    <div class="col-xs-12 col-md-5">
+                        <md-datepicker ng-model="dateFrom" md-placeholder="From"></md-datepicker>
+                    </div>
+                    <div class="col-xs-12 col-md-5">
+                        <md-datepicker ng-model="dateTo" md-placeholder="To"></md-datepicker>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 innerDiv customInnerDiv">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4" style="margin-top:2%;">
+                            <h4>All these words in title:</h4>
+                        </div>
+                        <div class="col-xs-12 col-md-8">
+                            <md-input-container  style="width:100%;">
+                                <input type="text" ng-model="title"/>
+                            </md-input-container>
+                        </div>
+                        <div class="col-md-4 sm-hidden xs-hidden"></div>
+                        <div class="col-xs-12 col-md-8">
+                            <small style="color: rgb(221,44,0);">*Type only the important words (e.g. 'president','elections','Hillary')</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 innerDiv customInnerDiv">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4>Choose keywords:</h4>
+                        </div>
+                        <div class="col-xs-12 col-md-9">
+                            <md-input-container  style="width:100%;">
+                                <input type="text" ng-model="keyword"/>
+                            </md-input-container>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <md-button class="md-fab" aria-label="Eat cake"  ng-click="addKeyword()">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </md-button>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="tagDiv" ng-repeat="keyword in keywords">
+                                <span>{{keyword}} <button class="btn no-class-button" ng-click="deleteKeyword($index)"><i class="glyphicon glyphicon-remove"></i></button></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 innerDiv customInnerDiv">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4>Choose people:</h4>
+                        </div>
+                        <div class="col-xs-9" style="margin-top:4%;">
+                            <form ng-submit="$event.preventDefault()">
+                                <md-autocomplete
+                                        ng-disabled="false"
+                                        md-no-cache="false"
+                                        md-selected-item="selectedItem"
+                                        md-search-text="searchText"
+                                        md-items="item in querySearch(searchText)"
+                                        md-item-text="item.display"
+                                        md-min-length="0"
+                                        placeholder="Search person by name">
+                                    <md-item-template>
+                                        <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.display}}</span>
+                                    </md-item-template>
+                                    <md-not-found>
+                                        No people matching "{{searchText}}" were found.
+                                    </md-not-found>
+                                </md-autocomplete>
+                            </form>
+                        </div>
+                        <div class="col-xs-3">
+                            <md-button class="md-fab" aria-label="Eat cake"  ng-click="addPerson()">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </md-button>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="tagDiv" ng-repeat="person in selectedPeople">
+                                <span>{{person.display}} <button class="btn no-class-button" ng-click="deletePerson($index)"><i class="glyphicon glyphicon-remove"></i></button></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 innerDiv customInnerDiv">
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <md-button class="md-fab" aria-label="Eat cake"  ng-click="search()">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </md-button>
+                        </div>
+                        <div class="col-xs-10" style="margin-top:2%;">
+                            <h4>Search with the chosen parameters</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 innerDiv customInnerDiv">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button class="btn no-class-button" ng-click="reset()">
+                                <h4><i class="glyphicon glyphicon-refresh"></i> Reset search parameters</h4>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-5 customDiv otherCustomDiv">
+            <div class="row">
+                <div class="col-xs-12 innerDiv">
+                    <h4>SEARCH RESULTS</h4>
+                </div>
+            </div>
+            <div class="row myRow" ng-hide="news.length == 0" style="margin-top:2%;">
+                <div class="col-xs-12 col-md-6 newsDiv innerDiv" style="margin-bottom:1%" ng-repeat="story in news">
+                    <a href="/#/news/{{story.id}}">
+                        <h4>{{story.title}}</h4>
+                        <small>{{story.timestamp}}</small>
+                        <small>...read more  <i class="glyphicon glyphicon-triangle-right"></i></small>
+                    </a>
+                </div>
+            </div>
+            <div class="row" ng-hide="hideError">
+                <div class="col-xs-12 errorDiv">
+                    <h2>SEARCH ERROR</h2>
+                    <h4>No stories were found with the parameters you have selected. Please adjust your search parameters and try again.</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

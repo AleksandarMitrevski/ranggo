@@ -4,6 +4,7 @@ import java.util.List;
 
 import mk.finki.ranggo.webapp.model.Content;
 import mk.finki.ranggo.webapp.model.Person;
+import mk.finki.ranggo.webapp.model.SearchObject;
 
 public interface ContentsSelector {
 	
@@ -28,5 +29,7 @@ public interface ContentsSelector {
 	public Content getContentByID(String id);
 	
 	public List<Content> getSimilarContents(String id);
+	
+	public List<Content> getFilteredContents(SearchObject searchObject);
 	
 }

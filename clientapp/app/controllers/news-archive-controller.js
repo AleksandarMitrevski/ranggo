@@ -23,10 +23,6 @@ WPAngularStarter.controller('NewsArchiveController',
             $scope.news = [];
             $scope.newsGroupedBySources = [];
 
-            if($scope.news.length == 0){
-                getNews();
-            }
-
             $scope.switchDate = function(){
                 if(getDateFormat($scope.myDate) != $scope.thisDate){
                     $location.path("/newsarchive/" + getDateFormat($scope.myDate));
@@ -51,6 +47,10 @@ WPAngularStarter.controller('NewsArchiveController',
                 return result;
             }
 
+            if($scope.macedonianSources.length == 0 && $scope.englishSources.length == 0){
+                getSources();
+            }
+
             function getNews(){
                 var result = $scope.thisDate;
                 var cookies = [];
@@ -61,6 +61,8 @@ WPAngularStarter.controller('NewsArchiveController',
                     }
                 }
 
+                console.log("pred proverka");
+                console.log(cookies);
                 if(cookies.length == 0){
                     for(var i=0;i<$scope.macedonianSources.length;i++){
                         cookies.push($scope.macedonianSources[i].name);
@@ -68,6 +70,7 @@ WPAngularStarter.controller('NewsArchiveController',
                     for(var i=0;i<$scope.englishSources.length;i++){
                         cookies.push($scope.englishSources[i].name);
                     }
+                    console.log(cookies);
                 }
 
                 RanggoService.getNewsByDateAndPreferences({date: result, preferences: cookies}).$promise.then(function(data){
@@ -94,9 +97,6 @@ WPAngularStarter.controller('NewsArchiveController',
                 });
             }
 
-            if($scope.macedonianSources.length == 0 && $scope.englishSources.length == 0){
-                getSources();
-            }
 
             function getSources(){
                 RanggoService.getSources().$promise.then(function(data){
@@ -149,6 +149,8 @@ WPAngularStarter.controller('NewsArchiveController',
                     if(countEnglish == maxEnglish){
                         $scope.selectedEnglish = true;
                     }
+
+                    getNews();
                 });
             }
 

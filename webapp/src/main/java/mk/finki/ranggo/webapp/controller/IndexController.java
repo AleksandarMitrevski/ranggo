@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import mk.finki.ranggo.webapp.model.Content;
 import mk.finki.ranggo.webapp.model.Person;
+import mk.finki.ranggo.webapp.model.SearchObject;
 import mk.finki.ranggo.webapp.model.Source;
 import mk.finki.ranggo.webapp.service.ContentsSelector;
 
@@ -118,6 +120,12 @@ public class IndexController {
 	@ResponseBody
 	public List<Content> getSimilarContents(@PathVariable String id){
 		return selector.getSimilarContents(id);
+	}
+	
+	@RequestMapping(value="/filtered-contents", method=RequestMethod.POST, produces="application/json")
+	@ResponseBody
+	public List<Content> getFilteredContents(@RequestBody SearchObject searchObject){
+		return selector.getFilteredContents(searchObject);
 	}
 	
 }
