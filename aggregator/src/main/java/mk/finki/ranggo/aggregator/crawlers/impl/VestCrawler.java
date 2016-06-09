@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Simona on 4/11/2016.
@@ -159,7 +160,7 @@ public class VestCrawler implements Crawler {
             String today = HelperClass.getToday();
             
             DateFormat outputFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z");
-            DateFormat inputFormat = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+            DateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", new Locale("US"));
 
             String inputText = new Date().toString();
             Date dateObj = inputFormat.parse(inputText);

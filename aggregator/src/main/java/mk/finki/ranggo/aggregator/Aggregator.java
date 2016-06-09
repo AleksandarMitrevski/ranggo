@@ -30,30 +30,13 @@ public class Aggregator
 		//populates the data store with the test dataset
 		Aggregator.test(aggregator);
 		
-		
+		//executes update method
 		Aggregator.update(null, aggregator);
-		
-		
-		//data storage example (does not generate duplicates due to 'unique' constraints)
-		//see http://github.com/Schenock/ranggo/tree/master/webapp/src/main/java/mk/finki/unip/ranggo/service/impl/ContentsAggregatorImpl.java
-//		
-//		Person person = new Person();
-//		Content content = new Content();
-//		
-//		person.setName("Donald Trump");
-//		content.setType("GOOGLE_NEWS");
-//		
-//		person = personRepository.save(person);
-//		content = contentRepository.save(content);
-//		
-//		System.out.println("Person ID: " + person.getId());
-//		System.out.println("Content ID: " + content.getId());
-		
-		
+	
 		context.close();
 	}
 	
-	//each invocation currently costs 120 AlchemyAPI transactions 
+	//a single invocation of this method costs > 1000 AlchemyAPI transactions
 	private static void update(String date, ContentsAggregator aggregator){
 		//if 'date' is null, the method aggregates contents published on the current date
 		//if it is, it aggregates the data published on that date
@@ -76,17 +59,19 @@ public class Aggregator
 		}
 		
 	    if(dateObj != null){
-//			try{
-//				aggregator.aggregateGoogleNewsRSSFeed(dateObj);
-//			}catch(ContentsAggregatorException exception){
-//				//log this
-//			}
-//			
-//			try{
-//				aggregator.aggregateHuffingtonPost();
-//			}catch(ContentsAggregatorException exception){
-//				//log this
-//			}
+	    	/* may want to uncomment in final version
+			try{
+				aggregator.aggregateGoogleNewsRSSFeed(dateObj);
+			}catch(ContentsAggregatorException exception){
+				//log this
+			}
+			
+			try{
+				aggregator.aggregateHuffingtonPost();
+			}catch(ContentsAggregatorException exception){
+				//log this
+			}
+	    	*/
 	    	
 	    	try{
 	    		aggregator.aggregateDnevnik();
