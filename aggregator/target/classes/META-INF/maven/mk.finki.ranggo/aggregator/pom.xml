@@ -51,13 +51,7 @@
     </dependency>
     
     <!-- Spring -->
-	<!-- http://mvnrepository.com/artifact/org.springframework/spring-web -->
-	<dependency>
-    	<groupId>org.springframework</groupId>
-    	<artifactId>spring-web</artifactId>
-    	<version>3.0.2.RELEASE</version>
-	</dependency>
-
+	
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-core</artifactId>
@@ -68,6 +62,13 @@
 		<groupId>org.springframework.data</groupId>
 		<artifactId>spring-data-mongodb</artifactId>
 		<version>${spring.data.mongo.version}</version>
+	</dependency>
+	
+	<!-- http://mvnrepository.com/artifact/org.springframework/spring-web -->
+	<dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-web</artifactId>
+    	<version>3.0.2.RELEASE</version>
 	</dependency>
 	
 	<!-- /Spring -->
@@ -118,6 +119,13 @@
 	</dependency>
 	
 	<!-- /Jackson -->
+	<!-- http://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+	<dependency>
+	    <groupId>org.codehaus.jackson</groupId>
+	    <artifactId>jackson-mapper-asl</artifactId>
+	    <version>1.5.0</version>
+	</dependency>
+	
 	
 	<!-- Hibernate Validator -->
 	

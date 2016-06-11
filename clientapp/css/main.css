@@ -185,3 +185,20 @@ footer{
 .customNav > li > a:hover{
     color: darkgrey;
 }
+
+#footer{
+    color: black;
+    padding-top:2%;
+    box-shadow: 0 3px 10px 7px rgba(0, 0, 0, 0.3);
+}
+
+.footerLink{
+    color : black;
+    font-size:0.8em;
+}
+
+.footerLink:hover{
+    color: white;
+    text-decoration: none;
+    font-size:0.8em;
+}

@@ -18,6 +18,7 @@ WPAngularStarter.controller('PersonController',
 
             $scope.selectedDate = "";
             $scope.contentsForSelectedDate = [];
+            $scope.contentsBySourceAndDate = [];
 
             $scope.totalRating = -2;
 
@@ -30,6 +31,10 @@ WPAngularStarter.controller('PersonController',
             }
 
             $scope.getRatingInArticle = function(articleID){
+                return getRatingInArticle(articleID);
+            }
+
+            function getRatingInArticle(articleID){
                 for(var i=0;i<$scope.personRating.length;i++){
                     if($scope.personRating[i].id == articleID){
                         var rating = $scope.personRating[i];
@@ -40,7 +45,7 @@ WPAngularStarter.controller('PersonController',
                             if(rating.personEntities[j].person){
                                 if(rating.personEntities[j].person.id == $scope.personID){
                                     if(rating.personEntities[j].score){
-                                        totalRating += rating.personEntities[j].score;
+                                        totalRating += parseFloat(rating.personEntities[j].score);
                                         totalNumber++;
                                     }
                                 }
@@ -50,7 +55,7 @@ WPAngularStarter.controller('PersonController',
                         for(var j=0;j<rating.keywords.length;j++){
                             if(rating.keywords[j].text == $scope.person.name){
                                 if(rating.keywords[j].score){
-                                    totalRating += rating.keywords[j].score;
+                                    totalRating += parseFloat(rating.keywords[j].score);
                                     totalNumber++;
                                 }
                             }
@@ -73,12 +78,42 @@ WPAngularStarter.controller('PersonController',
 
             function getContentsForSelectedDate(){
                 $scope.contentsForSelectedDate = [];
+                $scope.contentsBySourceAndDate = [];
                 for(var i=0;i<$scope.personRating.length;i++){
                     if($scope.personRating[i].timestamp == $scope.selectedDate){
+                        var flag = false;
+
+                        for(var j=0;j<$scope.contentsBySourceAndDate.length;j++){
+                            if($scope.contentsBySourceAndDate[j].source == $scope.personRating[i].type){
+                                $scope.contentsBySourceAndDate[j].contents.push($scope.personRating[i]);
+                                flag = true;
+                                break;
+                            }
+                        }
+
+                        if(!flag){
+                            var contents = [];
+                            contents.push($scope.personRating[i]);
+                            $scope.contentsBySourceAndDate.push({source: $scope.personRating[i].type, contents: contents});
+                        }
                         $scope.contentsForSelectedDate.push($scope.personRating[i]);
                     }
                 }
 
+                for(var i=0;i<$scope.contentsBySourceAndDate.length;i++){
+                    var totalAverage = 0;
+                    var source = $scope.contentsBySourceAndDate[i];
+                    for(var j=0;j<source.contents.length;j++){
+                        var average = parseFloat(getRatingInArticle(source.contents[j].id));
+                        $scope.contentsBySourceAndDate[i].contents[j].averageRating = average;
+                        totalAverage += average;
+                    }
+                    if(source.contents.length == 1){
+                        $scope.contentsBySourceAndDate[i].averageRating = totalAverage;
+                    } else {
+                        $scope.contentsBySourceAndDate[i].averageRating = totalAverage/ $scope.contentsBySourceAndDate[i].contents.length;
+                    }
+                }
             }
 
             function getPerson(){
@@ -161,7 +196,7 @@ WPAngularStarter.controller('PersonController',
                         if(rating.personEntities[j].person){
                             if(rating.personEntities[j].person.id == $scope.personID){
                                 if(rating.personEntities[j].score){
-                                    totalRating += rating.personEntities[j].score;
+                                    totalRating += parseFloat(rating.personEntities[j].score);
                                     totalNumber++;
                                 }
                             }
@@ -171,7 +206,7 @@ WPAngularStarter.controller('PersonController',
                     for(var j=0;j<rating.keywords.length;j++){
                         if(rating.keywords[j].text == $scope.person.name){
                             if(rating.keywords[j].score){
-                                totalRating += rating.keywords[j].score;
+                                totalRating += parseFloat(rating.keywords[j].score);
                                 totalNumber++;
                             }
                         }

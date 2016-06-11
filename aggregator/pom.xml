@@ -119,6 +119,13 @@
 	</dependency>
 	
 	<!-- /Jackson -->
+	<!-- http://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+	<dependency>
+	    <groupId>org.codehaus.jackson</groupId>
+	    <artifactId>jackson-mapper-asl</artifactId>
+	    <version>1.5.0</version>
+	</dependency>
+	
 	
 	<!-- Hibernate Validator -->
 	

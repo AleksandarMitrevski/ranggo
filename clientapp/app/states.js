@@ -100,10 +100,6 @@ WPAngularStarter.config([
     '$rootScope',
     function($rootScope) {
       $rootScope.menuItems = [{
-        state: 'root',
-        icon: 'glyphicon glyphicon-home',
-        name: 'HOME'
-      },{
         state: 'root.categories',
         icon: 'glyphicon glyphicon-search',
         name: 'FIND PEOPLE'
