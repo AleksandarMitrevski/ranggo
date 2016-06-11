@@ -40,6 +40,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 
 /**
@@ -49,9 +50,11 @@ public class FokusCrawler implements Crawler{
 
     private static String baseURL = "http://fokus.mk/kategorija/aktuelno-2/page/";
     private List<AlchemyAPIAnalysisResult> results;
-
-    public FokusCrawler(){
+    private ContentRepository contentRepository;
+    
+    public FokusCrawler(ContentRepository contentRepository){
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
+    	this.contentRepository = contentRepository;
     }
     
     public List<AlchemyAPIAnalysisResult> crawl() {
@@ -89,7 +92,10 @@ public class FokusCrawler implements Crawler{
                             flag = false;
                             break;
                         }
-                        extractDataFromPage(urlLeft);
+                        
+                        if(contentRepository.findBySourceUrl(urlLeft) == null){
+                            extractDataFromPage(urlLeft);
+                        }
 
                         String timeRight = (String)xpathObj.evaluate("./div/div/div[contains(@class,'objaveno-pred')]//text()", nodeLeft, XPathConstants.STRING);
                         String urlRight = (String)xpathObj.evaluate("./div/h2/a/@href", nodeRight, XPathConstants.STRING);
@@ -98,8 +104,12 @@ public class FokusCrawler implements Crawler{
                             flag = false;
                             break;
                         }
-                        extractDataFromPage(urlRight);
-
+                        
+                        if(contentRepository.findBySourceUrl(urlRight) == null){
+                        	extractDataFromPage(urlRight);
+                        }
+                        
+                      
                     }
                 }catch (SocketTimeoutException e) {
                     e.printStackTrace();

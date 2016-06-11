@@ -100,6 +100,9 @@ public class IndexController {
 		sources.add(new Source("mk", "24 вести","http://24vesti.mk"));
 		sources.add(new Source("en", "GOOGLE_NEWS","http://news.google.com/"));
 		sources.add(new Source("en", "HUFFINGTON_POST","http://www.huffingtonpost.com/"));
+		sources.add(new Source("en", "NY Times","http://www.nytimes.com/"));
+		sources.add(new Source("en", "The Guardian","http://www.theguardian.com/uk"));
+
 		return sources;
 	}
 	

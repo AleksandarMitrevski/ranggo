@@ -4,6 +4,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -43,8 +44,9 @@ public class VestCrawler implements Crawler {
     private static String baseURL = "http://www.vest.mk";
     private List<String> categories;
     List<AlchemyAPIAnalysisResult> results;
+    private ContentRepository contentRepository;
  
-    public VestCrawler(){
+    public VestCrawler(ContentRepository contentRepository){
         categories = new ArrayList<String>();
         categories.add("?ItemID=248611FB8F724A4D89E75953D9321EF0");
         categories.add("?ItemID=2C2B6DE119DADB4BA9CDF0C2B7918E11");
@@ -54,7 +56,7 @@ public class VestCrawler implements Crawler {
         categories.add("?ItemID=FD8578D49B477643AE86230043ED205A");
         categories.add("?ItemID=5C4AEF021FFB6642B91F9FC3C0A7E4B9");
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
-
+    	this.contentRepository = contentRepository;
     }
 
     public  List<AlchemyAPIAnalysisResult> crawl() {
@@ -85,8 +87,12 @@ public class VestCrawler implements Crawler {
                         if(!newsURL.equals("")) {
                             newsURL = baseURL + newsURL.trim();
                             System.out.println("\t\tNews url: " + newsURL);
-                            if(!extractDataFromPage(newsURL)){
-                                break;
+                            if(contentRepository.findBySourceUrl(newsURL) == null){
+                            	if(!extractDataFromPage(newsURL)){
+                                    break;
+                                }
+                            } else {
+                            	break;
                             }
                         }
                     }

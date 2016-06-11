@@ -36,6 +36,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 
 /**
@@ -45,10 +46,10 @@ public class UtrinskiVesnikCrawler implements Crawler {
 
     private static String baseURL = "http://www.utrinski.mk/";
     private List<String> categories;
-
+    private ContentRepository contentRepository;
     List<AlchemyAPIAnalysisResult> results;
     
-    public UtrinskiVesnikCrawler(){
+    public UtrinskiVesnikCrawler(ContentRepository contentRepository){
         categories = new ArrayList<String>();
         categories.add("?ItemID=20467E30720CB241A155CA584D233EF8");
         categories.add("?ItemID=1E3705B1DBE3194B8E69407760B6865A");
@@ -56,6 +57,7 @@ public class UtrinskiVesnikCrawler implements Crawler {
         categories.add("?ItemID=A45A8F343EE1774EAA0582225746A73F");
         
         results = new ArrayList<AlchemyAPIAnalysisResult>();
+        this.contentRepository = contentRepository;
     }
 
     public  List<AlchemyAPIAnalysisResult> crawl() {
@@ -85,10 +87,14 @@ public class UtrinskiVesnikCrawler implements Crawler {
                         Node node = tableRows.item(j);
                         String newsURL = (String)xpathObj.evaluate("./table/tbody/tr/td[2]/a/@href", node, XPathConstants.STRING);
                         newsURL = baseURL + newsURL.trim();
-                        System.out.println("\t\t" + newsURL);
-                        if(!extractDataFromPage(newsURL)){
-                            break;
+                        if(contentRepository.findBySourceUrl(newsURL) == null){
+                        	if(!extractDataFromPage(newsURL)){
+                                break;
+                            }
+                        } else {
+                        	break;
                         }
+                        
                     }
 
                 } catch (SocketTimeoutException e) {

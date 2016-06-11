@@ -206,7 +206,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	
 	public void aggregateDnevnik() throws ContentsAggregatorException {
 		// TODO Auto-generated method stub
-		DnevnikCrawler crawler = new DnevnikCrawler();
+		DnevnikCrawler crawler = new DnevnikCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -216,7 +216,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	
 	public void aggregateFokus() throws ContentsAggregatorException{
 
-//		FokusCrawler crawler = new FokusCrawler();
+//		FokusCrawler crawler = new FokusCrawler(contentRepository);
 //		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 //		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -225,7 +225,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateKurir() throws ContentsAggregatorException{
-		KurirCrawler crawler = new KurirCrawler();
+		KurirCrawler crawler = new KurirCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -234,7 +234,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateLibertas() throws ContentsAggregatorException{
-//		LibertasCrawler crawler = new LibertasCrawler();
+//		LibertasCrawler crawler = new LibertasCrawler(contentRepository);
 //		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 //		
 //		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -243,7 +243,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateNovaTV() throws ContentsAggregatorException{
-		NovaTVCrawler crawler = new NovaTVCrawler();
+		NovaTVCrawler crawler = new NovaTVCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -252,7 +252,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateRepublika() throws ContentsAggregatorException{
-		RepublikaCrawler crawler = new RepublikaCrawler();
+		RepublikaCrawler crawler = new RepublikaCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -261,7 +261,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateTelma() throws ContentsAggregatorException{
-		TelmaCrawler crawler = new TelmaCrawler();
+		TelmaCrawler crawler = new TelmaCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -271,7 +271,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		
 	
 	public void aggregateUtrinskiVesnik() throws ContentsAggregatorException{
-		UtrinskiVesnikCrawler crawler = new UtrinskiVesnikCrawler();
+		UtrinskiVesnikCrawler crawler = new UtrinskiVesnikCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -280,7 +280,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 
 	public void aggregateVecher() throws ContentsAggregatorException{
-		VecherCrawler crawler = new VecherCrawler();
+		VecherCrawler crawler = new VecherCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -289,7 +289,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateVest() throws ContentsAggregatorException{
-		VestCrawler crawler = new VestCrawler();
+		VestCrawler crawler = new VestCrawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){
@@ -298,7 +298,7 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 	}
 	
 	public void aggregateVesti24() throws ContentsAggregatorException{
-		Vesti24Crawler crawler = new Vesti24Crawler();
+		Vesti24Crawler crawler = new Vesti24Crawler(contentRepository);
 		List<AlchemyAPIAnalysisResult> results = crawler.crawl();
 		
 		for(AlchemyAPIAnalysisResult analysisResults : results){

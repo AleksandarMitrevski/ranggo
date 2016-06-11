@@ -4,6 +4,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -46,8 +47,9 @@ public class NovaTVCrawler implements Crawler {
     private List<String> categories;
     private Map<String, String> months;
     private List<AlchemyAPIAnalysisResult> results;
+    private ContentRepository contentRepository;
    
-    public NovaTVCrawler(){
+    public NovaTVCrawler(ContentRepository contentRepository){
         categories = new ArrayList<String>();
         categories.add("/category/makedonija/");
         categories.add("/category/svet/");
@@ -67,6 +69,7 @@ public class NovaTVCrawler implements Crawler {
         months.put("декември","12");
 
         results = new ArrayList<AlchemyAPIAnalysisResult>();
+        this.contentRepository = contentRepository;
     }
 
     public List<AlchemyAPIAnalysisResult> crawl() {
@@ -99,10 +102,16 @@ public class NovaTVCrawler implements Crawler {
                         if(count == 1){
                             String firstURL = (String) xpathObj.evaluate("//div[contains(@id,'main-content')]/article/h3/a/@href", doc, XPathConstants.STRING);
                             System.out.println("\t\tNews url: " + firstURL);
-                            if(!extractDataFromPage(firstURL)){
-                                flag = false;
-                                break;
+                            if(contentRepository.findBySourceUrl(firstURL) == null){
+                            	if(!extractDataFromPage(firstURL)){
+                                    flag = false;
+                                    break;
+                                }
+                            } else {
+                            	flag = false;
+                            	break;
                             }
+                           
                             xpathQuery = "//div[contains(@id,'main-content')]/div[contains(@class,'archive-grid mh-section mh-group')]/article|//div[contains(@id,'main-content')]/div[contains(@class,'archive-list mh-section mh-group')]/article";
 
                         } else {
@@ -114,10 +123,16 @@ public class NovaTVCrawler implements Crawler {
                             Node node = tableRows.item(j);
                             String newsURL = (String)xpathObj.evaluate("./div[1]/a/@href",node, XPathConstants.STRING);
                             System.out.println("\t\tNews url: " + newsURL);
-                            if(!extractDataFromPage(newsURL)){
-                                flag = false;
-                                break;
+                            if(contentRepository.findBySourceUrl(newsURL) == null){
+                            	if(!extractDataFromPage(newsURL)){
+                                    flag = false;
+                                    break;
+                                }
+                            } else {
+                            	flag = false;
+                            	break;
                             }
+                            
                         }
 
 

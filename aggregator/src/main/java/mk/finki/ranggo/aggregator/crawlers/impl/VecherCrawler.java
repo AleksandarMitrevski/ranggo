@@ -4,6 +4,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -43,8 +44,9 @@ public class VecherCrawler implements Crawler{
     private static String baseURL = "http://vecer.mk";
     private List<String> categories;
     List<AlchemyAPIAnalysisResult> results;
+    private ContentRepository contentRepository;
     
-    public VecherCrawler(){
+    public VecherCrawler(ContentRepository contentRepository){
         categories = new ArrayList<String>();
         categories.add("makedonija");
         categories.add("balkan");
@@ -56,6 +58,7 @@ public class VecherCrawler implements Crawler{
         categories.add("sport");
         
         results = new ArrayList<AlchemyAPIAnalysisResult>();
+        this.contentRepository = contentRepository;
     }
 
     public  List<AlchemyAPIAnalysisResult> crawl() {
@@ -85,7 +88,9 @@ public class VecherCrawler implements Crawler{
                         String newsURL = (String)xpathObj.evaluate("./div/h3/a/@href", node, XPathConstants.STRING);
                         newsURL = baseURL + newsURL;
                         System.out.println("\t\tNews url: " + newsURL);
-                        extractDataFromPage(newsURL);
+                        if(contentRepository.findBySourceUrl(newsURL) == null){
+                        	extractDataFromPage(newsURL);
+                        }
                     }
 
                 } catch(SocketTimeoutException ex){

@@ -4,6 +4,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -43,9 +44,11 @@ public class KurirCrawler implements Crawler {
     private static String baseURL = "http://kurir.mk";
     	
     List<AlchemyAPIAnalysisResult> results;
+    private ContentRepository contentRepository;
     
-    public KurirCrawler(){
+    public KurirCrawler(ContentRepository contentRepository){
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
+    	this.contentRepository = contentRepository;
     }
 
     public List<AlchemyAPIAnalysisResult> crawl() {
@@ -76,7 +79,9 @@ public class KurirCrawler implements Crawler {
                     for (int i = 0; i < tableRows.getLength(); i++) {
                         Node node = tableRows.item(i);
                         String newsURL = (String) xpathObj.evaluate("./article/a/@href", node, XPathConstants.STRING);
-                        extractDataFromPage(newsURL);
+                        if(contentRepository.findBySourceUrl(newsURL) == null){
+                        	 extractDataFromPage(newsURL);
+                        }
                     }
                 }catch(SocketTimeoutException e){
                     try {

@@ -5,6 +5,7 @@ import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.entities.AlchemyAPIObject;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -39,9 +40,11 @@ public class LibertasCrawler implements Crawler {
     private String url = "http://www.libertas.mk/category/%D0%B0%D0%BA%D1%82%D1%83%D0%B5%D0%BB%D0%BD%D0%BE/";
 
     private List<AlchemyAPIAnalysisResult> results;
-
-    public LibertasCrawler(){
+    private ContentRepository contentRepository;
+    
+    public LibertasCrawler(ContentRepository contentRepository){
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
+    	this.contentRepository = contentRepository;
     }
     
     public  List<AlchemyAPIAnalysisResult> crawl(){
@@ -97,11 +100,18 @@ public class LibertasCrawler implements Crawler {
                 String link = (String) xPath.evaluate("./div[contains(@class,'item-header')]//a/@href", tr, XPathConstants.STRING);
                 String title = (String) xPath.evaluate("./div[contains(@class,'item-content')]/h3/a/text()", tr, XPathConstants.STRING);
                 String shortText = (String) xPath.evaluate("./div[contains(@class,'item-content')]/p//text()", tr, XPathConstants.STRING);
-                boolean flag = secondLevel(link, image, title, shortText);
-                if (flag == false) {
-                    returnValue = flag;
-                    break;
+                
+                if(contentRepository.findBySourceUrl(link) == null){
+                	boolean flag = secondLevel(link, image, title, shortText);
+                    if (flag == false) {
+                        returnValue = flag;
+                        break;
+                    }
+                } else {
+                	returnValue = false;
+                	break;
                 }
+                
             }
         }catch(Exception ex){
         	System.out.println("ex: " + ex);

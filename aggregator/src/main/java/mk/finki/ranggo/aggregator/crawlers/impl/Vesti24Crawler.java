@@ -4,6 +4,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -42,8 +43,9 @@ public class Vesti24Crawler implements Crawler {
     private static String baseURL = "http://24vesti.mk";
     private List<String> categories;
     List<AlchemyAPIAnalysisResult> results;
+    private ContentRepository contentRepository;
 
-    public Vesti24Crawler(){
+    public Vesti24Crawler(ContentRepository contentRepository){
         categories = new ArrayList<String>();
         categories.add("makedonija");
         categories.add("sloboda-na-mediumi");
@@ -56,6 +58,7 @@ public class Vesti24Crawler implements Crawler {
         categories.add("sport");
         categories.add("tehnologija");
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
+    	this.contentRepository = contentRepository;
     }
 
     public  List<AlchemyAPIAnalysisResult> crawl() {
@@ -93,7 +96,9 @@ public class Vesti24Crawler implements Crawler {
                             }
                             String newsURL = (String)xpathObj.evaluate("./td/div[1]/span/a/@href", node, XPathConstants.STRING);
                             newsURL = baseURL + newsURL;
-                            extractDataFromPage(newsURL, date);
+                            if(contentRepository.findBySourceUrl(newsURL) == null){
+                                extractDataFromPage(newsURL, date);
+                            }
                         }
                     } catch(SocketTimeoutException e){
                         e.printStackTrace();

@@ -37,6 +37,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 
 /**
@@ -47,9 +48,11 @@ public class TelmaCrawler implements Crawler {
     private static String baseURL = "http://www.telma.com.mk";
     
     List<AlchemyAPIAnalysisResult> results;
+    private ContentRepository contentRepository;
     
-    public TelmaCrawler(){
+    public TelmaCrawler(ContentRepository contentRepository){
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
+    	this.contentRepository = contentRepository;
     }
 
     public  List<AlchemyAPIAnalysisResult> crawl() {
@@ -77,7 +80,9 @@ public class TelmaCrawler implements Crawler {
                 String newsURL = (String)xpathObj.evaluate("./div/span/div[2]/h2/a/@href",node, XPathConstants.STRING);
                 newsURL = baseURL + newsURL.trim();
                 System.out.println("\t\t" + newsURL);
-                extractDataFromPage(newsURL, date);
+                if(contentRepository.findBySourceUrl(newsURL) == null){
+                    extractDataFromPage(newsURL, date);
+                }
             }
 
         } catch(SocketTimeoutException e){

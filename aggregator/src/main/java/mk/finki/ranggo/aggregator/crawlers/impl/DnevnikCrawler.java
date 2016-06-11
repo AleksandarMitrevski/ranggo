@@ -37,6 +37,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 
 /**
@@ -48,8 +49,11 @@ public class DnevnikCrawler implements Crawler {
     
     List<AlchemyAPIAnalysisResult> results;
     
-    public DnevnikCrawler(){
+    private ContentRepository contentRepository;
+    
+    public DnevnikCrawler(ContentRepository contentRepository){
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
+    	this.contentRepository = contentRepository;
     }
     
     public List<AlchemyAPIAnalysisResult> crawl() {
@@ -75,9 +79,12 @@ public class DnevnikCrawler implements Crawler {
                 Node node = tableRows.item(i);
                 String newsURL = (String)xpathObj.evaluate("./a/@href",node, XPathConstants.STRING);
                 newsURL = baseURL + newsURL.trim();
-                if(!extractDataFromPage(newsURL)){
-                    break;
-                }
+                
+                if(contentRepository.findBySourceUrl(newsURL) == null){
+                	if(!extractDataFromPage(newsURL)){
+                        break;
+                    }
+                } 
             }
 
         } catch (SocketTimeoutException e) {

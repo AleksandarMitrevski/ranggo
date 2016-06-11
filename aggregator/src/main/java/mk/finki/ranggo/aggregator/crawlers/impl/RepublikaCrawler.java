@@ -4,6 +4,7 @@ import mk.finki.ranggo.aggregator.ContentsAggregatorImpl.AlchemyAPIAnalysisResul
 import mk.finki.ranggo.aggregator.alchemyapi.AlchemyAPIWrapper;
 import mk.finki.ranggo.aggregator.crawlers.Crawler;
 import mk.finki.ranggo.aggregator.helper.HelperClass;
+import mk.finki.ranggo.aggregator.repository.ContentRepository;
 import mk.finki.ranggo.aggregator.yandex.YandexTranslator;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.htmlcleaner.CleanerProperties;
@@ -43,9 +44,11 @@ public class RepublikaCrawler implements Crawler {
     private static String baseURL = "http://republika.mk/";
 
     private List<AlchemyAPIAnalysisResult> results;
-
-    public RepublikaCrawler() {
+    private ContentRepository contentRepository;
+    
+    public RepublikaCrawler(ContentRepository contentRepository) {
     	results = new ArrayList<AlchemyAPIAnalysisResult>();
+    	this.contentRepository = contentRepository;
     }
     
     public  List<AlchemyAPIAnalysisResult> crawl() {
@@ -73,9 +76,14 @@ public class RepublikaCrawler implements Crawler {
                     NodeList tableRows = (NodeList) xpathObj.evaluate("//div[contains(@id,'content')]/article", doc, XPathConstants.NODESET);
                     for(int i=0;i<tableRows.getLength();i++){
                         String newsURL = (String)xpathObj.evaluate("./a/@href",tableRows.item(i), XPathConstants.STRING);
-                        if(!extractDataFromPage(newsURL)){
-                            flag = false;
-                            break;
+                        if(contentRepository.findBySourceUrl(newsURL) == null){
+                        	if(!extractDataFromPage(newsURL)){
+                                flag = false;
+                                break;
+                            }
+                        } else{
+                        	flag = false;
+                        	break;
                         }
                     }
 
