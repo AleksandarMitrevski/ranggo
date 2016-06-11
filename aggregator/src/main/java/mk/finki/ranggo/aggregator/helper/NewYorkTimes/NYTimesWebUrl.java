@@ -2,6 +2,7 @@ package mk.finki.ranggo.aggregator.helper.NewYorkTimes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Marija on 4/5/2016.
@@ -9,11 +10,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NYTimesWebUrl {
 
-    @JsonProperty("web_url")
+   
+	@SerializedName("web_url")
     private String web_url;
-    @JsonProperty("lead_paragraph")
+	@SerializedName("lead_paragraph")
     private String title;
-    @JsonProperty("pub_date")
+	@SerializedName("pub_date")
     private String pub_date;
     
     public NYTimesWebUrl(){

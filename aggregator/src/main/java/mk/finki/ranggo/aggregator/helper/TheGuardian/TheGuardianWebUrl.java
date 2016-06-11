@@ -2,6 +2,7 @@ package mk.finki.ranggo.aggregator.helper.TheGuardian;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Marija on 4/5/2016.
@@ -9,13 +10,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TheGuardianWebUrl {
 
-    @JsonProperty("webUrl")
+    @SerializedName("webUrl")
     private String webUrl;
-    @JsonProperty("webTitle")
+    @SerializedName("webTitle")
     private String webTitle;
-    @JsonProperty("webPublicationDate")
+    @SerializedName("webPublicationDate")
     private String webPublicationDate;
-
+    private transient String type;
+    private transient String sectionId;
+    private transient String apiUrl;
+    private transient String sectionName;
+    
     public TheGuardianWebUrl(){
 
     }
@@ -55,5 +60,39 @@ public class TheGuardianWebUrl {
 	public void setWebPublicationDate(String webPublicationDate) {
 		this.webPublicationDate = webPublicationDate;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getSectionId() {
+		return sectionId;
+	}
+
+	public void setSectionId(String sectionId) {
+		this.sectionId = sectionId;
+	}
+
+	public String getApiUrl() {
+		return apiUrl;
+	}
+
+	public void setApiUrl(String apiUrl) {
+		this.apiUrl = apiUrl;
+	}
+
+	public String getSectionName() {
+		return sectionName;
+	}
+
+	public void setSectionName(String sectionName) {
+		this.sectionName = sectionName;
+	}
+	
+	
     
 }

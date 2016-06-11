@@ -2,6 +2,7 @@ package mk.finki.ranggo.aggregator.helper.TheGuardian;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Marija on 4/5/2016.
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TheGuardianResult {
 
-    @JsonProperty("response")
+    @SerializedName("response")
     private TheGuardianResponse response;
 
     public TheGuardianResult() {

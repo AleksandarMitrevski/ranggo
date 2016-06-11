@@ -2,6 +2,7 @@ package mk.finki.ranggo.aggregator.helper.NewYorkTimes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
@@ -11,10 +12,12 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NYTimesResponse {
 
-    @JsonProperty("meta")
+	@SerializedName("meta")
     private Meta meta;
-    @JsonProperty("docs")
+	@SerializedName("docs")
     private ArrayList<NYTimesWebUrl> docs;
+    private transient String status;
+    private transient String copyright;
 
     public NYTimesResponse() {
 
@@ -40,4 +43,21 @@ public class NYTimesResponse {
     public void setDocs(ArrayList<NYTimesWebUrl> docs) {
         this.docs = docs;
     }
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getCopyright() {
+		return copyright;
+	}
+
+	public void setCopyright(String copyright) {
+		this.copyright = copyright;
+	}
+    
 }

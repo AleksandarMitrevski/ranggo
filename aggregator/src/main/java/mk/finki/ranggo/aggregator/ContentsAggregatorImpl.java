@@ -52,8 +52,12 @@ import org.xml.sax.SAXException;
 
 
 
+
+
 import com.alchemyapi.api.AlchemyAPI;
 import com.alchemyapi.api.AlchemyAPI_CombinedParams;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import mk.finki.ranggo.aggregator.ContentsAggregatorException.AggregatorMethod;
 import mk.finki.ranggo.aggregator.crawlers.impl.DnevnikCrawler;
@@ -302,62 +306,127 @@ public class ContentsAggregatorImpl implements ContentsAggregator {
 		}
 	}
 	
-public void aggregateNYTimes(Date date) throws ContentsAggregatorException{
+	public void aggregateNYTimes(Date date) throws ContentsAggregatorException{
 		
-		final String api_key="b4d2896590ef4a8aaf583d26cd97a6df";
-		final String api_url="http://api.nytimes.com/svc/search/v2/articlesearch.json?";
-			
 		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYYMMdd");
 		String stringDate=simpleDateFormat.format(date);
 		
-		 String URL=api_url+"begin_date="+stringDate+"&end_date="+stringDate+"&api-key="+api_key+"&fl=web_url,lead_paragraph,pub_date";
-		 
-		 try{
-			 
-		 RestTemplate restTemplate=new RestTemplate();
+		NYTimesResult response=pullArticlesNYTimes(stringDate,stringDate,null);
 		
-	     MappingJacksonHttpMessageConverter jsonConverter = new MappingJacksonHttpMessageConverter();
-	     //jsonConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "json", MappingJackson2HttpMessageConverter.DEFAULT_CHARSET)));
-	     restTemplate.getMessageConverters().add(jsonConverter);
-	     NYTimesResult response=restTemplate.getForObject(URL,NYTimesResult.class);
+		int pages=response.getResponse().getMeta().getHits()/10;
+		
+		if((pages%10)>0){
+            pages+=1;
+        }
+
+        for(int i=1;i<pages;++i){
+            if(i==100)
+                break;
+           pullArticlesNYTimes(stringDate, stringDate, Integer.toString(i));
+        }
+		
+	}
+
+	private  NYTimesResult pullArticlesNYTimes(String beginDate, String endDate, String page){
+		
+		final String api_key="b4d2896590ef4a8aaf583d26cd97a6df";
+		final String api_url="http://api.nytimes.com/svc/search/v2/articlesearch.json?";
+		
+		String URL=api_url+"begin_date="+beginDate+"&end_date="+endDate+"&api-key="+api_key+"&fl=web_url,lead_paragraph,pub_date";
+		 
+		 if(page!=null)
+	            URL+="&page="+page;
+		
+		 try{
+			 String url = URL;
+	         URLConnection conn = new URL(url).openConnection();
+	         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+			 
+	         String inputLine;
+	            StringBuilder sb = new StringBuilder();
+	            while ((inputLine = in.readLine()) != null) {
+	                sb.append(inputLine);
+	            }
+
+	          String json = sb.toString();
+	         
+	          GsonBuilder gsonBuilder=new GsonBuilder();
+	          Gson gson=gsonBuilder.create(); 
+			 
 	     
-	     ArrayList<NYTimesWebUrl> list=response.getResponse().getDocs();
+	          NYTimesResult response=gson.fromJson(json, NYTimesResult.class);
+	          ArrayList<NYTimesWebUrl> list=response.getResponse().getDocs();
 	     
-	     for(NYTimesWebUrl webUrl: list){
-	    	this.processNYTimes(webUrl.getWeb_url(), webUrl.getTitle(), webUrl.getPub_date());
-	     }
+	          for(NYTimesWebUrl webUrl: list){
+	        	  this.processNYTimes(webUrl.getWeb_url(), webUrl.getTitle(), webUrl.getPub_date());
+	          }
+	          
+	          return response;
 	     
 		 }catch(Exception e){
 			 e.printStackTrace();
-		 }
+		 } 
+		return null;
 	}
+	
 	
 	public void aggregateTheGuardian(Date date)
 			throws ContentsAggregatorException {
 		  
-		final String api_key="c5b09c10-090a-4f9e-b87f-37df6fb7a079";
-		final String api_url="http://content.guardianapis.com/search?";
 		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
 		String stringDate=simpleDateFormat.format(date);
+				
+		TheGuardianResult response=pullArticles(stringDate, stringDate, null);
 		
-		String URL=api_url+"from-date="+stringDate+"&to-date="+stringDate+"&api-key="+api_key;
-		
-		try{
-			 RestTemplate restTemplate=new RestTemplate();
-			 MappingJacksonHttpMessageConverter jsonConverter = new MappingJacksonHttpMessageConverter();
-			 //jsonConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "json", MappingJackson2HttpMessageConverter.DEFAULT_CHARSET)));
-			 restTemplate.getMessageConverters().add(jsonConverter);
-			 TheGuardianResult response = restTemplate.getForObject(URL,TheGuardianResult.class);
-			 ArrayList<TheGuardianWebUrl> results=response.getResponse().getUrls();
-		
-			for(TheGuardianWebUrl webUrl:results){
-				 this.processTheGuardian(webUrl.getWebUrl(), webUrl.getWebTitle(), webUrl.getWebPublicationDate());
+		if(response!=null){
+			for(int i=2;i<response.getResponse().getPages();++i){
+				pullArticles(stringDate, stringDate,Integer.toString(i));
 			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
 		
 	}
+	
+	private TheGuardianResult pullArticles(String beginDate,String endDate, String page){
+		
+		final String api_key="c5b09c10-090a-4f9e-b87f-37df6fb7a079";
+		final String api_url="http://content.guardianapis.com/search?";
+		String URL=api_url+"from-date="+beginDate+"&to-date="+endDate+"&api-key="+api_key;
+		
+		if(page!=null){
+			URL+="&page="+page;
+		}
+		
+		try{
+			
+			 String url = URL;
+	         URLConnection conn = new URL(url).openConnection();
+	         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+			 
+	         String inputLine;
+	            StringBuilder sb = new StringBuilder();
+	            while ((inputLine = in.readLine()) != null) {
+	                sb.append(inputLine);
+	            }
+
+	          String json = sb.toString();
+	         
+	          GsonBuilder gsonBuilder=new GsonBuilder();
+	          Gson gson=gsonBuilder.create();
+		
+	          TheGuardianResult response=gson.fromJson(json, TheGuardianResult.class);
+	          
+	          ArrayList<TheGuardianWebUrl> results=response.getResponse().getUrls();
+	          for(TheGuardianWebUrl webUrl:results){
+				 this.processTheGuardian(webUrl.getWebUrl(), webUrl.getWebTitle(), webUrl.getWebPublicationDate());
+	          }
+	          
+	          return response;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	
 	
